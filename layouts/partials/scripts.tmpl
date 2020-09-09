@@ -1,0 +1,8 @@
+{{ $scripts := slice }}
+{{ $scripts = $scripts | append "js/main.js" }}
+
+{{ .Scratch.Set "scripts" $scripts }}
+{{ .Scratch.Set "bundle" "js/bundle.js" }}
+{{ .Scratch.Set "mode" "defer" }}
+{{ partial "import-scripts.tmpl" . }}
+

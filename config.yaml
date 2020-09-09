@@ -1,0 +1,54 @@
+baseURL: https://sukhamerida.com/
+title: Sukha Mérida
+params:
+  name: Sukha Mérida
+  titleSeparator: "-"
+  copyright: Sukha Mérida 2020
+  author:
+    name: Sukha Mérida
+    email: info@sukhamerida.com
+    website: https://sukhamerida.com/
+  image: /favicon-512x512.png
+  # googleTagManager: GTM-NZ2R3W7
+  # disqus: sukhamerida-links
+  # interledger: "$ilp.uphold.com/YM4XLxrdPh44"
+defaultContentLanguage: es
+defaultContentLanguageInSubdir: true
+languages:
+  en:
+    languageName: English
+    params:
+      description: This is the Sukha Mérida official website, but we are working on it right now...
+  es:
+    languageName: Español
+    params:
+      description: Esta es la página oficial de Sukha Mérida, pero todavía estamos trabajando en ella...
+enableEmoji: true
+markup:
+  highlight:
+    codeFences: true
+    hl_Lines: ""
+    lineNoStart: 1
+    lineNos: false
+    lineNumbersInTable: true
+    noClasses: false
+    tabWidth: 2
+  tableOfContents:
+    startLevel: 1
+    endLevel: 6
+  goldmark:
+    renderer:
+      unsafe: true
+enableRobotsTXT: true
+server:
+  headers:
+    - for: /**
+      values:
+        X-Frame-Options: SAMEORIGIN
+        X-Content-Type-Options: nosniff
+        X-XSS-Protection: 1; mode=block
+        Referrer-Policy: strict-origin-when-cross-origin
+    - for: /*.webmanifest
+      values:
+        Content-Type: application/manifest+json; charset=utf-8
+

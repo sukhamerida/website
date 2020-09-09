@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="{{ .Site.Language | default "en" }}">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+  {{ range .AlternativeOutputFormats }}
+    <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}"
+          href="{{ .Permalink | safeURL }}"/>
+  {{ end }}
+
+  {{ block "head-metadata" . }}
+    {{ partial "metadata.tmpl" . }}
+    {{ partial "app.tmpl" . }}
+    {{ hugo.Generator }}
+  {{ end }}
+
+  {{ with .Site.Params.interledger }}
+    <meta name="monetization" content="{{ . }}">
+  {{ end }}
+
+  <title>
+    {{ $.Param "title" }}
+    {{ .Site.Params.titleSeparator }}
+    {{ .Site.Params.name }}
+  </title>
+
+  {{ block "styles" . }}{{ partial "styles.tmpl" . }}{{ end }}
+  {{ block "scripts" . }}{{ partial "scripts.tmpl" . }}{{ end }}
+</head>
+<body>
+  {{ if ne hugo.Environment "development" }}
+    {{ with .Site.Params.googleTagManager }}
+      {{ partial "google-tag-manager.tmpl" . }}
+    {{ end }}
+  {{ end }}
+
+  {{ block "body" . }}{{ end }}
+</body>
+</html>
+
