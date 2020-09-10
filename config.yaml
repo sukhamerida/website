@@ -10,7 +10,7 @@ params:
     website: https://sukhamerida.com/
   image: /favicon-512x512.png
   # googleTagManager: GTM-NZ2R3W7
-  # disqus: sukhamerida-links
+  # disqus: sukhamerida
   # interledger: "$ilp.uphold.com/YM4XLxrdPh44"
 defaultContentLanguage: es
 defaultContentLanguageInSubdir: true

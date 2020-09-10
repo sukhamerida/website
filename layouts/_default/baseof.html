@@ -21,13 +21,17 @@
   {{ end }}
 
   <title>
-    {{ $.Param "title" }}
-    {{ .Site.Params.titleSeparator }}
     {{ .Site.Params.name }}
   </title>
 
-  {{ block "styles" . }}{{ partial "styles.tmpl" . }}{{ end }}
-  {{ block "scripts" . }}{{ partial "scripts.tmpl" . }}{{ end }}
+  {{ $SassOpts := (dict "targetPath" "css/main.css" "outputStyle" "compressed" "enableSourceMap" true) }}
+  {{ $sheet := resources.Get "sass/main.scss" | resources.ToCSS $SassOpts }}
+
+  <link rel="stylesheet" type="text/css" href="{{ $sheet.Permalink }}"/>
+
+  {{ $JSOpts := (dict "targetPath" "js/main.js" "outputStyle" "target" "esnext" "compressed" "minify" true "format" "iife" "externals" (slice) "defines" (dict)) }}
+  {{ $script := resources.Get "js/main.js" | js.Build $JSOpts }}
+  <script defer src="{{ $script.Permalink }}"></script>
 </head>
 <body>
   {{ if ne hugo.Environment "development" }}
