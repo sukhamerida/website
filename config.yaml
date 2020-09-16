@@ -15,14 +15,14 @@ params:
 defaultContentLanguage: es
 defaultContentLanguageInSubdir: true
 languages:
-  en:
-    languageName: English
-    params:
-      description: This is the Sukha Mérida official website, but we are working on it right now...
   es:
     languageName: Español
     params:
       description: Esta es la página oficial de Sukha Mérida, pero todavía estamos trabajando en ella...
+  en:
+    languageName: English
+    params:
+      description: This is the Sukha Mérida official website, but we are working on it right now...
 enableEmoji: true
 markup:
   highlight:
