@@ -1,5 +1,5 @@
-hugo_version := 0.74.3
-hugo_port := 1313
+HUGO_VERSION ?= 0.74.3
+HUGO_PORT ?= 1313
 
 .PHONY: all
 all: build
@@ -15,7 +15,7 @@ clean:
 .PHONY: run
 run:
 	hugo server -DEF --noHTTPCache --i18n-warnings --disableFastRender \
-		--bind 0.0.0.0 --port $(hugo_port) --baseUrl / --appendPort=false
+		--bind 0.0.0.0 --port $(HUGO_PORT) --baseUrl / --appendPort=false
 
 # Docker
 
@@ -25,19 +25,19 @@ docker-build:
 		-u $$(id -u $$USER) \
 		-v "$${TMPDIR:-/tmp}":/tmp/ \
 		-v "$$PWD":/site/ \
-		ntrrg/hugo:$(hugo_version)
+		ntrrg/hugo:$(HUGO_VERSION)
 
 .PHONY: docker-run
 docker-run:
 	@docker run --rm -it \
-		-e PORT=$(hugo_port) \
-		-p $(hugo_port):$(hugo_port) \
+		-e PORT=$(HUGO_PORT) \
+		-p $(HUGO_PORT):$(HUGO_PORT) \
 		-u $$(id -u $$USER) \
 		-v "$${TMPDIR:-/tmp}":/tmp/ \
 		-v "$$PWD":/site/ \
-		ntrrg/hugo:$(hugo_version) server -DEF --noHTTPCache --i18n-warnings \
+		ntrrg/hugo:$(HUGO_VERSION) server -DEF --noHTTPCache --i18n-warnings \
 			--disableFastRender \
-			--bind 0.0.0.0 --port $(hugo_port) --baseUrl / --appendPort=false
+			--bind 0.0.0.0 --port $(HUGO_PORT) --baseUrl / --appendPort=false
 
 .PHONY: docker-shell
 docker-shell:
@@ -46,5 +46,5 @@ docker-shell:
 		-v "$${TMPDIR:-/tmp}":/tmp/ \
 		-v "$$PWD":/site/ \
 		--entrypoint sh \
-		ntrrg/hugo:$(hugo_version)
+		ntrrg/hugo:$(HUGO_VERSION)
 
