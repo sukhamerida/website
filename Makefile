@@ -10,7 +10,7 @@ build:
 
 .PHONY: clean
 clean:
-	rm -rf public resources
+	rm -rf public
 
 .PHONY: run
 run:
