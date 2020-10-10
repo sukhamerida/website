@@ -23,6 +23,7 @@ languages:
     languageName: English
     params:
       description: This is the Sukha Mérida official website, but we are working on it right now...
+taxonomies: []
 enableEmoji: true
 markup:
   highlight:
@@ -40,6 +41,7 @@ markup:
     renderer:
       unsafe: true
 enableRobotsTXT: true
+minify: true
 server:
   headers:
     - for: /**
