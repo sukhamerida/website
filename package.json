@@ -1,0 +1,21 @@
+{
+  "name": "sukhamerida-website",
+  "version": "0.1.0",
+  "description": "Main website.",
+  "main": "",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sukhamerida/website.git"
+  },
+  "author": "Sukha Mérida <info@sukahmerida.com> (https://sukhamerida.com)",
+  "license": "CC-BY-4.0",
+  "bugs": {
+    "url": "https://github.com/sukhamerida/website/issues"
+  },
+  "homepage": "https://www.sukhamerida.com",
+  "dependencies": {
+    "bulma": "^0.9.1"
+  },
+  "devDependencies": {}
+}

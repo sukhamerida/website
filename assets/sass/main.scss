@@ -6,9 +6,25 @@ $family-secondary: sans-serif;
 $body-background-color: #fff;
 $body-size: 20px;
 
-@import "../vendor/bulma/sass/utilities/_all.sass";
-@import "../vendor/bulma/sass/base/_all.sass";
-@import "../vendor/bulma/sass/layout/hero.sass";
-@import "../vendor/bulma/sass/elements/container.sass";
-@import "../vendor/bulma/sass/elements/title.sass";
+@import "bulma/sass/utilities/_all.sass";
+@import "bulma/sass/base/_all.sass";
+@import "bulma/sass/layout/hero.sass";
+@import "bulma/sass/elements/container.sass";
+@import "bulma/sass/elements/title.sass";
+
+/* Privacy alert */
+
+@import "bulma/sass/elements/other.sass";
+@import "bulma/sass/components/message.sass";
+@import "bulma/sass/helpers/other.sass";
+
+.privacy-alert {
+  width: 100%;
+
+  margin-bottom: 0em !important;
+
+  position: fixed;
+  left: 0%;
+  bottom: 0%;
+}
 

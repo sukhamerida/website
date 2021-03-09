@@ -5,13 +5,15 @@ params:
   titleSeparator: "-"
   copyright: Sukha Mérida 2020
   author:
+    type: Organization
     name: Sukha Mérida
     email: info@sukhamerida.com
     website: https://sukhamerida.com/
   image: /favicon-512x512.png
+  ampImage: /icon-206x60.png
   googleTagManager: GTM-KPMRMK7
   # disqus: sukhamerida
-  # interledger: "$ilp.uphold.com/YM4XLxrdPh44"
+  interledger: "$ilp.uphold.com/YM4XLxrdPh44"
 defaultContentLanguage: es
 defaultContentLanguageInSubdir: true
 languages:
@@ -24,6 +26,7 @@ languages:
     params:
       description: This is the Sukha Mérida official website, but we are working on it right now...
 taxonomies: []
+theme: []
 enableEmoji: true
 markup:
   highlight:
@@ -38,18 +41,29 @@ markup:
     startLevel: 1
     endLevel: 6
   goldmark:
+    attribute:
+      block: true
+      title: true
     renderer:
       unsafe: true
 enableRobotsTXT: true
+ignoreErrors: 
+  - error-remote-getjson
+enableGitInfo: true
 minify: true
 server:
   headers:
     - for: /**
       values:
-        X-Frame-Options: SAMEORIGIN
+        Cache-Control: no-cache, no-store
         X-Content-Type-Options: nosniff
-        X-XSS-Protection: 1; mode=block
         Referrer-Policy: strict-origin-when-cross-origin
+    - for: /**/
+      values:
+        X-XSS-Protection: 1; mode=block
+    - for: /*.html
+      values:
+        X-XSS-Protection: 1; mode=block
     - for: /*.webmanifest
       values:
         Content-Type: application/manifest+json; charset=utf-8
