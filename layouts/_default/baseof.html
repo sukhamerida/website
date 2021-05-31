@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="{{ .Site.Language | default "en" }}">
+<html lang="{{ site.Language | default "en" }}">
 <head>
   {{ if ne hugo.Environment "development" }}
-    {{ with .Site.Params.googleTagManager }}
+    {{ with site.Params.googleTagManager }}
       <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
       new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
       j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -15,37 +15,94 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
+  {{ range .Translations }}
+    <link rel="alternate" hreflang="{{ .Language.Lang }}"
+          href="{{ .Permalink | safeURL }}"/>
+  {{ end }}
+
   {{ range .AlternativeOutputFormats }}
     <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}"
           href="{{ .Permalink | safeURL }}"/>
   {{ end }}
 
   {{ block "head-metadata" . }}
-    {{ partial "metadata.tmpl" . }}
-    {{ partial "app.tmpl" . }}
+    {{ partial "site/metadata.tmpl" . }}
+    {{ partial "site/app.tmpl" . }}
     {{ hugo.Generator }}
   {{ end }}
 
-  {{ with .Site.Params.interledger }}
+  {{ with site.Params.interledger }}
     <meta name="monetization" content="{{ . }}">
   {{ end }}
 
   <title>
-    {{ .Site.Params.name }}
+    {{ block "head-title" . }}
+      {{ if not .IsHome }}
+        {{ .Title }} {{ site.Params.titleSeparator }}
+      {{ end }}
+
+      {{ site.Params.name }}
+    {{ end }}
   </title>
 
-  {{ .Scratch.Set "cssSrc" "sass/main.scss" }}
-  {{ .Scratch.Set "cssOutput" "css/main.css" }}
-  {{ $sheet := partial "build-css.tmpl" . }}
-  <link rel="stylesheet" type="text/css" href="{{ $sheet.Permalink }}"/>
+  {{ block "styles-default" . }}
+    {{ .Scratch.Set "cssSrc" (resources.Get "sass/main.scss") }}
+    {{ .Scratch.Set "cssOutput" "css/main.css" }}
+    {{ $sheet := partial "build-css.tmpl" . }}
+    <link rel="stylesheet" type="text/css" href="{{ $sheet.Permalink }}"/>
+  {{ end }}
 
-  {{ .Scratch.Set "jsSrc" "js/main.js" }}
-  {{ $script := partial "build-js.tmpl" . }}
-  <script defer src="{{ $script.Permalink }}"></script>
+  {{ block "styles" . }}{{ end }}
+
+  {{ $i18nFile := printf "i18n/%s.toml" site.Language }}
+  {{ if fileExists $i18nFile }}
+    {{ $i18n := $i18nFile | readFile | unmarshal }}
+
+    <script>
+      function goTemplate(tmpl, ctx) {
+        const ids = tmpl.match(/\{\{ ?\.[A-Za-z0-9_-]* ?\}\}/g) || []
+
+        for (const id of ids) {
+          let key = id.match(/\.[A-Za-z0-9_-]*/)[0]
+
+          if (key === '.') {
+            tmpl = tmpl.replace(id, ctx)
+            continue
+          }
+
+          key = key[1].toLowerCase() + key.substring(2)
+          tmpl = tmpl.replace(id, ctx[key])
+        }
+
+        return tmpl
+      }
+
+      {
+        const i18nData = {{ $i18n }}
+
+        window.i18n = (key, ctx) => {
+          const t = i18nData[key]
+
+          if (t === undefined) {
+            const lang = {{ site.Language.Lang }}
+            console.warn(`i18n|MISSING_TRANSLATION|${lang}|${key}`)
+            return ''
+          }
+
+          if (t.one !== undefined && ctx !== undefined && ctx.count === 1)
+            return goTemplate(t.one, ctx)
+
+          return goTemplate(t.other, ctx)
+        }
+      }
+    </script>
+  {{ end }}
+
+  {{ block "scripts-head" . }}{{ end }}
 </head>
 <body>
   {{ if ne hugo.Environment "development" }}
-    {{ with .Site.Params.googleTagManager }}
+    {{ with site.Params.googleTagManager }}
       <noscript>
         <iframe src="https://www.googletagmanager.com/ns.html?id={{ . }}"
       height="0" width="0" style="display:none;visibility:hidden"></iframe>
@@ -54,7 +111,38 @@
   {{ end }}
 
   {{ block "body" . }}{{ end }}
-  {{ partial "privacy.tmpl" . }}
+
+  {{ $paPage := site.GetPage "/privacy-alert" }}
+  {{ $paData := newScratch }}
+  {{ $paData.Set "title" $paPage.Title }}
+  {{ $paData.Set "content" $paPage.Content }}
+  {{ partial "components/privacy-alert.tmpl" (dict "Data" $paData "Page" .) }}
+
+  {{ block "scripts-default" . }}
+    {{ if eq hugo.Environment "local" }}
+      {{ $scripts := slice }}
+      {{ $scripts = $scripts | append "vendor/spruce-v2.7.1.umd.js" }}
+      {{ .Scratch.Set "jsScripts" $scripts }}
+      {{ partial "import-js.tmpl" . }}
+    {{ else if eq hugo.Environment "production" }}
+      <script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/spruce@2.7.x/dist/spruce.umd.min.js" defer></script>
+    {{ end }}
+
+    {{ .Scratch.Set "jsSrc" (resources.Get "js/main.js") }}
+    {{ $script := partial "build-js.tmpl" . }}
+    <script defer src="{{ $script.Permalink }}"></script>
+
+    {{ if eq hugo.Environment "local" }}
+      {{ $scripts := slice }}
+      {{ $scripts = $scripts | append "vendor/alpine-v2.8.2.js" }}
+      {{ .Scratch.Set "jsScripts" $scripts }}
+      {{ partial "import-js.tmpl" . }}
+    {{ else if eq hugo.Environment "production" }}
+      <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.x/dist/alpine.min.js" defer></script>
+    {{ end }}
+  {{ end }}
+
+  {{ block "scripts" . }}{{ end }}
 </body>
 </html>
 

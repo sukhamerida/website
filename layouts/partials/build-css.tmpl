@@ -1,5 +1,5 @@
 {{ $src := .Scratch.Get "cssSrc" }}
-{{ $output := .Scratch.Get "cssOutput" | default $src }}
+{{ $output := .Scratch.Get "cssOutput" | default $src.Name }}
 {{ $opts := .Scratch.Get "cssOptions" | default dict }}
 
 {{ $cssOpts := dict "targetPath" $output }}
@@ -16,5 +16,5 @@
 {{ .Scratch.Delete "cssOutput" }}
 {{ .Scratch.Delete "cssOptions" }}
 
-{{ return (resources.Get $src | resources.ToCSS $cssOpts) }}
+{{ return resources.ToCSS $cssOpts $src }}
 

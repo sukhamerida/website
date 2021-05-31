@@ -3,7 +3,7 @@
     {{ $url := urls.Parse .Destination }}
     {{ $slug := path.Join .Page.File.Dir $url.Path }}
 
-    {{ with .Page.Site.GetPage $slug }}
+    {{ with site.GetPage $slug }}
       href="{{ .Permalink | safeURL }}
             {{- with $url.RawQuery }}?{{ . | safeURL }}{{ end -}}
             {{- with $url.Fragment }}#{{ . | safeURL }}{{ end -}}

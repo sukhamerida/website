@@ -1,0 +1,93 @@
+{{ define "styles-default" }}
+  {{ .Scratch.Set "cssSrc" (resources.Get "sass/tests.scss") }}
+  {{ .Scratch.Set "cssOutput" "css/tests.css" }}
+  {{ $sheet := partial "build-css.tmpl" . }}
+  <link rel="stylesheet" type="text/css" href="{{ $sheet.Permalink }}"/>
+{{ end }}
+
+{{ define "body" }}
+  <section class="section main-section">
+    <div class="box is-radiusless main-container">
+      <header class="page-header has-text-centered">
+        <img src="{{ .Params.image }}" alt="{{ .Title }}"/>
+
+        <h1 class="title is-4">{{ .Title }}</h1>
+      </header>
+
+      <main class="page-body">
+        <noscript>
+          <div class="notification noscript-notification is-warning">
+            <p class="notification-body">
+              {{ i18n "JAVASCRIPT_IS_DISABLED" }}.
+            </p>
+          </div>
+        </noscript>
+
+        <div class="test-body" x-data="{ done: true, submit() {} }">
+          <form @submit.prevent="submit()">
+            <div class="field">
+              <label class="label">Nombres:</label>
+
+              <div class="control is-expanded">
+                <input class="input" type="text" name="firstname" required
+                       placeholder="Nombres"/>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Apellidos:</label>
+
+              <div class="control">
+                <input class="input" type="text" name="lastname" required
+                       placeholder="Apellidos"/>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Teléfono:</label>
+
+              <div class="control">
+                <input class="input" type="tel" name="phone" required
+                       placeholder="Teléfono"/>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Correo electrónico:</label>
+
+              <div class="control">
+                <input class="input" type="email" name="email" required
+                       placeholder="Correo electrónico"/>
+              </div>
+            </div>
+
+            <div class="field is-grouped is-grouped-centered">
+              <button type="submit" class="button is-primary"
+                      :class="{ 'is-loading': !done }" :disabled="!done">
+                Siguiente
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+
+      <footer class="page-footer has-text-centered">
+        <div>
+          Powered by
+          <a href="https://gohugo.io">Hugo</a>,
+          <a href="https://bulma.io">Bulma</a>,
+          <a href="https://netlify.com/">Netlify</a>
+        </div>
+
+        <div class="copyright">
+          Copyright &copy; {{ site.Params.copyright }}
+        </div>
+
+        <div class="devs">
+          <a target="_blank" rel="noopener noreferrer"
+             href="https://ntrrg.dev">@ntrrg</a>
+        </div>
+      </footer>
+    </div>
+  </section>
+{{ end }}

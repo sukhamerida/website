@@ -1,0 +1,33 @@
+{{ $title := .Data.Get "title" }}
+{{ $content := .Data.Get "content" }}
+
+<div class="privacy-alert">
+  <div class="message is-radiusless is-small"
+           x-data="privacyState()" x-show="isOpen()" x-cloak>
+    <div class="message-header is-radiusless">
+      <p>{{ $title }}</p>
+      <button class="delete" aria-label="delete" @click="close()"></button>
+    </div>
+
+    <div class="message-body">
+      {{ $content }}
+    </div>
+  </div>
+</div>
+
+<script>
+  function privacyState() {
+    Spruce.store('privacyAlert', { open: true }, window.localStorage)
+
+    return {
+      isOpen() {
+        return this.$store.privacyAlert.open
+      },
+
+      close() {
+        this.$store.privacyAlert.open = false
+      },
+    }
+  }
+</script>
+
