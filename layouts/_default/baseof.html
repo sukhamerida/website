@@ -50,9 +50,9 @@
     {{ .Scratch.Set "cssOutput" "css/main.css" }}
     {{ $sheet := partial "build-css.tmpl" . }}
     <link rel="stylesheet" type="text/css" href="{{ $sheet.Permalink }}"/>
-  {{ end }}
 
-  {{ block "styles" . }}{{ end }}
+    {{ block "styles" . }}{{ end }}
+  {{ end }}
 
   {{ $i18nFile := printf "i18n/%s.toml" site.Language }}
   {{ if fileExists $i18nFile }}
@@ -118,6 +118,8 @@
   {{ $paData.Set "content" $paPage.Content }}
   {{ partial "components/privacy-alert.tmpl" (dict "Data" $paData "Page" .) }}
 
+  {{ block "scripts" . }}{{ end }}
+
   {{ block "scripts-default" . }}
     {{ if eq hugo.Environment "local" }}
       {{ $scripts := slice }}
@@ -141,8 +143,6 @@
       <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.x/dist/alpine.min.js" defer></script>
     {{ end }}
   {{ end }}
-
-  {{ block "scripts" . }}{{ end }}
 </body>
 </html>
 

@@ -6,7 +6,7 @@
 
 @import "variables.scss";
 
-$body-background-color: #d7cfb5;
+$body-background-color: #a3bf76;
 $body-size: 16px;
 
 @import "bulma/sass/utilities/_all.sass";
@@ -20,10 +20,6 @@ $box-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.2), 0 0px 0 1px rgba($s
 
 @import "bulma/sass/elements/box.sass";
 @import "bulma/sass/helpers/other.sass";
-
-.main-section {
-  padding-bottom: 0em;
-}
 
 .main-container {
   max-width: 40em;
@@ -51,8 +47,11 @@ $box-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.2), 0 0px 0 1px rgba($s
 
 /* Main */
 
+@import "bulma/sass/components/tabs.sass";
+@import "bulma/sass/helpers/flexbox.sass";
 @import "bulma/sass/form/shared.sass";
 @import "bulma/sass/form/input-textarea.sass";
+@import "bulma/sass/form/select.sass";
 @import "bulma/sass/form/tools.sass";
 @import "bulma/sass/elements/button.sass";
 @import "bulma/sass/elements/notification.sass";
@@ -60,6 +59,15 @@ $box-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.2), 0 0px 0 1px rgba($s
 
 .noscript-notification {
   margin-bottom: 1em;
+}
+
+.is-grouped .button:not(:first-child) {
+  margin-left: 1em;
+}
+
+.select.is-expanded,
+.select.is-expanded select {
+  width: 100%;
 }
 
 /* Footer */

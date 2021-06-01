@@ -12,8 +12,17 @@ params:
   image: /favicon-512x512.png
   ampImage: /icon-206x60.png
   googleTagManager: GTM-KPMRMK7
-  # disqus: sukhamerida
+  #disqus: sukhamerida
   interledger: "$ilp.uphold.com/YM4XLxrdPh44"
+  shims:
+    - name: "@ryangjchandler/spruce"
+      shim: "js/shims/spruce.js"
+      content: |
+        module.exports = window.Spruce
+    - name: "alpinejs"
+      shim: "js/shims/alpine.js"
+      content: |
+        module.exports = window.Alpine
 defaultContentLanguage: es
 defaultContentLanguageInSubdir: true
 languages:
