@@ -24,7 +24,7 @@
         </noscript>
 
         <div class="test-body" x-data="doshasState()" x-init="init()">
-          <form @submit.prevent="submit()">
+          <form name="testDoshas" @submit.prevent="submit()">
             <div class="tabs is-centered is-boxed" x-ref="tabs"
                  role="tablist" aria-label="Pestañas">
               <ul>
@@ -73,7 +73,7 @@
                      role="tab" aria-controls="tabpanel-results"
                      :aria-selected="tab === 'results' ? 'true' : 'false'"
                      :tabindex="tab === 'results' ? 0 : -1"
-                     @click.prevent="changeTab('results')">
+                     @click.prevent="getResults(); changeTab('results')">
                     Resultados
                   </a>
                 </li>
@@ -93,14 +93,15 @@
             <div id="tabpanel-intro" tabindex="0"
                  role="tabpanel" aria-labelledby="tab-intro"
                  :hidden="tab !== 'intro'" x-cloak>
-              {{ .Content }}
-
-              <br/>
+              <div class="content">
+                {{ .Content }}
+              </div>
 
               <div class="field is-grouped is-grouped-centered">
                 <button type="button" class="button"
-                        :class="{ 'is-loading': !ready }" :disabled="!ready"
-                        @click="resetTest()">
+                        :class="{ 'is-loading': !isReady() }"
+                        :disabled="!isReady()"
+                        @click="reset()">
                   Reiniciar test
                 </button>
 
@@ -114,484 +115,28 @@
             <div id="tabpanel-body" tabindex="0"
                  role="tabpanel" aria-labelledby="tab-body"
                  :hidden="tab !== 'body'" x-cloak>
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[0]">
-                      <option value="">Contextura</option>
-                      <option value="v">Delgado, huesudo</option>
-                      <option value="p">Moderada</option>
-                      <option value="k">Grande, robusto, bien desarrollado</option>
-                    </select>
+              {{ range $i, $_ := .Params.fields.body }}
+                <div class="field">
+                  <label class="label"
+                         x-show.transition="fields.body[{{ $i }}]">
+                    {{ .label }}:
+                  </label>
+
+                  <div class="control is-expanded">
+                    <div class="select is-expanded"
+                         :class="{'is-danger': !fields.body[{{ $i }}]}">
+                      <select name="body[]" required
+                              x-model="fields.body[{{ $i }}]">
+                        <option value="">{{ .label }}</option>
+
+                        {{ range .options }}
+                          <option value="{{ .value }}">{{ .text }}</option>
+                        {{ end }}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[1]">
-                      <option value="">Estatura</option>
-                      <option value="v">Muy alto o muy pequeño</option>
-                      <option value="p">Mediana</option>
-                      <option value="k">Generalmente pequeños, pero pueden ser altos y grandes</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[2]">
-                      <option value="">Peso</option>
-                      <option value="v">Dificultad para ganar peso</option>
-                      <option value="p">Mediano, pueden ganar o perder peso con facilidad</option>
-                      <option value="k">Generalmente con sobrepeso. Dificultad para perderlo</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[3]">
-                      <option value="">Brillo de la Piel</option>
-                      <option value="v">Opaco</option>
-                      <option value="p">Rojo, lustroso</option>
-                      <option value="k">Blanco, pálido</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[4]">
-                      <option value="">Textura de la Piel</option>
-                      <option value="v">Seca, áspera, fría, rugosa, venas prominentes</option>
-                      <option value="p">Caliente, grasosa, húmeda, pecas, acné</option>
-                      <option value="k">Gruesa, fría, bien lubricada</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[5]">
-                      <option value="">Temperatura del Cuerpo</option>
-                      <option value="v">Manos y pies fríos</option>
-                      <option value="p">Caliente</option>
-                      <option value="k">Frío o normal</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[6]">
-                      <option value="">Cabello</option>
-                      <option value="v">Seco, fino, crespo</option>
-                      <option value="p">Oleoso, calvicie prematura, canoso</option>
-                      <option value="k">Fuerte, ondulado, lustroso</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[7]">
-                      <option value="">Frente</option>
-                      <option value="v">Estrecha</option>
-                      <option value="p">Moderada, surcos</option>
-                      <option value="k">Ancha</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[8]">
-                      <option value="">Ojos</option>
-                      <option value="v">Pequeños, nerviosos</option>
-                      <option value="p">Penetrantes, se irritan fácilmente</option>
-                      <option value="k">Grandes, atractivos, pestañas grandes</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[9]">
-                      <option value="">Dientes</option>
-                      <option value="v">Irregulares, pequeños, mal formados</option>
-                      <option value="p">Regulares, encías sangran con facilidad</option>
-                      <option value="k">Grandes, bien formados</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[10]">
-                      <option value="">Lengua</option>
-                      <option value="v">Aspera</option>
-                      <option value="p">Suave, rosada</option>
-                      <option value="k">Gruesa</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[11]">
-                      <option value="">Cara</option>
-                      <option value="v">Pequeña, arrugada, seca</option>
-                      <option value="p">Delicada, rojiza, perfil agudo</option>
-                      <option value="k">Grande, agradable, perfil suave</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[12]">
-                      <option value="">Tórax</option>
-                      <option value="v">Estrecho</option>
-                      <option value="p">Desarrollo moderado</option>
-                      <option value="k">Ancho, bien desarrollado</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[13]">
-                      <option value="">Huesos</option>
-                      <option value="v">Delgados, articulaciones crujientes</option>
-                      <option value="p">Medianos, articulaciones flojas</option>
-                      <option value="k">Gruesos, articulaciones fuertes</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[14]">
-                      <option value="">Uñas</option>
-                      <option value="v">Quebradizas, ásperas</option>
-                      <option value="p">Suaves, rosadas</option>
-                      <option value="k">Fuertes, gruesas</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[15]">
-                      <option value="">Calidad del Sueño</option>
-                      <option value="v">Ligero, con interrupciones</option>
-                      <option value="p">Variable</option>
-                      <option value="k">Profundo, excesivo</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[16]">
-                      <option value="">Le disgusta</option>
-                      <option value="v">El frío, la resequedad</option>
-                      <option value="p">Substancias y atmósfera caliente</option>
-                      <option value="k">Sustancias frías y aceitosas, atmósfera húmeda</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[17]">
-                      <option value="">Apetito</option>
-                      <option value="v">Variable, nervioso</option>
-                      <option value="p">Grande, irritable si debe saltar la comida</option>
-                      <option value="k">Moderado pero constante</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[18]">
-                      <option value="">Sed</option>
-                      <option value="v">Escasa</option>
-                      <option value="p">Generalmente sediento</option>
-                      <option value="k">Moderada</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[19]">
-                      <option value="">Hábitos Intestinales</option>
-                      <option value="v">Heces duras, secas, constipación</option>
-                      <option value="p">Heces suaves, sueltas, tendencia a la diarrea</option>
-                      <option value="k">Regular, heces normales</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[20]">
-                      <option value="">Orina</option>
-                      <option value="v">Escasa</option>
-                      <option value="p">Abundante, amarilla intensa</option>
-                      <option value="k">Moderada, clara</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[21]">
-                      <option value="">Sudoración</option>
-                      <option value="v">Escasa, sin olor</option>
-                      <option value="p">Profusa, olor intenso</option>
-                      <option value="k">Moderada</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[22]">
-                      <option value="">Comprensión</option>
-                      <option value="v">Espontánea</option>
-                      <option value="p">Promedio</option>
-                      <option value="k">Requiere tiempo para comprender</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[23]">
-                      <option value="">Reacción al Estrés</option>
-                      <option value="v">Miedo y ansiedad bajo estrés</option>
-                      <option value="p">Frustración, irritabilidad, enojo bajo estrés</option>
-                      <option value="k">Maneja bien el estrés</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[24]">
-                      <option value="">Resistencia a la enfermedad</option>
-                      <option value="v">Pobre, sistema inmunológico variable</option>
-                      <option value="p">Mediana, tendencia a las infecciones</option>
-                      <option value="k">Buena, consistente, sistema inmunológico fuerte</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[25]">
-                      <option value="">Enfermedades Frecuentes</option>
-                      <option value="v">Nerviosas, mentales, dolor neurálgico y articular</option>
-                      <option value="p">Infecciosas, inflamatorias, trastornos sanguíneos</option>
-                      <option value="k">Sistémicas, respiratorias, edema, mucosidad,
-                    inflamación articular</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[26]">
-                      <option value="">Sexualidad</option>
-                      <option value="v">Interés sexual variable, fantasía sexual activa</option>
-                      <option value="p">Interés e impulso sexual alto</option>
-                      <option value="k">Interés e impulso sexual constante</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[27]">
-                      <option value="">Estado de Animo</option>
-                      <option value="v">Ideas y estado de animo cambiables</option>
-                      <option value="p">Intenso al expresar ideas y sentimientos</option>
-                      <option value="k">Estable, confiable, lento para cambiar de ideas</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[28]">
-                      <option value="">Preferencias Climáticas</option>
-                      <option value="v">Climas calientes, sol, humedad</option>
-                      <option value="p">Climas fríos bien ventilados</option>
-                      <option value="k">Cualquier clima siempre que no sea húmedo</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[29]">
-                      <option value="">Actividad</option>
-                      <option value="v">Inquieto</option>
-                      <option value="p">Moderado</option>
-                      <option value="k">Se mueve lentamente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[30]">
-                      <option value="">Temperamento</option>
-                      <option value="v">Nervioso, cambiable</option>
-                      <option value="p">Motivado, intenso</option>
-                      <option value="k">Conservador</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[31]">
-                      <option value="">Emociones Positivas</option>
-                      <option value="v">Adaptabilidad</option>
-                      <option value="p">Valor, coraje</option>
-                      <option value="k">Amor</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[32]">
-                      <option value="">Emociones Negativas</option>
-                      <option value="v">Miedo</option>
-                      <option value="p">Cólera</option>
-                      <option value="k">Apego</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="body[]" required
-                         x-model="$store.testDoshas.fields.body[33]">
-                      <option value="">Fe</option>
-                      <option value="v">Variable, errática</option>
-                      <option value="p">Fuerte, determinado</option>
-                      <option value="k">Sostenida, lenta en cambiar</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <br/>
+              {{ end }}
 
               <div class="field is-grouped is-grouped-centered">
                 <button type="button" class="button"
@@ -609,413 +154,28 @@
             <div id="tabpanel-mind" tabindex="0"
                  role="tabpanel" aria-labelledby="tab-mind"
                  :hidden="tab !== 'mind'" x-cloak>
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[0]">
-                      <option value="">Dieta</option>
-                      <option value="s">Vegetariana</option>
-                      <option value="r">Algo de carne</option>
-                      <option value="t">Mucha carne</option>
-                    </select>
+              {{ range $i, $_ := .Params.fields.mind }}
+                <div class="field">
+                  <label class="label"
+                         x-show.transition="fields.mind[{{ $i }}]">
+                    {{ .label }}:
+                  </label>
+
+                  <div class="control is-expanded">
+                    <div class="select is-expanded"
+                         :class="{'is-danger': !fields.mind[{{ $i }}]}">
+                      <select name="mind[]" required
+                              x-model="fields.mind[{{ $i }}]">
+                        <option value="">{{ .label }}</option>
+
+                        {{ range .options }}
+                          <option value="{{ .value }}">{{ .text }}</option>
+                        {{ end }}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[1]">
-                      <option value="">Drogas, Alcohol, Estimulantes</option>
-                      <option value="s">Nunca</option>
-                      <option value="r">Ocasionalmente</option>
-                      <option value="t">Frecuentemente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[2]">
-                      <option value="">Impresiones Sensoriales</option>
-                      <option value="s">Calmas, puras</option>
-                      <option value="r">Mezcladas</option>
-                      <option value="t">Perturbadas</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[3]">
-                      <option value="">Necesidad de Sueño</option>
-                      <option value="s">Poca</option>
-                      <option value="r">Moderada</option>
-                      <option value="t">Alta</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[4]">
-                      <option value="">Actividad Sexual</option>
-                      <option value="s">Baja</option>
-                      <option value="r">Moderada</option>
-                      <option value="t">Alta</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[5]">
-                      <option value="">Control de los Sentidos</option>
-                      <option value="s">Bueno</option>
-                      <option value="r">Moderado</option>
-                      <option value="t">Débil</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[6]">
-                      <option value="">Habla</option>
-                      <option value="s">Calma y apacible</option>
-                      <option value="r">Agitada</option>
-                      <option value="t">Torpe</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[7]">
-                      <option value="">Limpieza</option>
-                      <option value="s">Alta</option>
-                      <option value="r">Moderada</option>
-                      <option value="t">Baja</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[8]">
-                      <option value="">Trabajo</option>
-                      <option value="s">Desinteresado</option>
-                      <option value="r">Interés propio</option>
-                      <option value="t">Perezoso</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[9]">
-                      <option value="">Ira</option>
-                      <option value="s">Rara vez</option>
-                      <option value="r">Algunas veces</option>
-                      <option value="t">Frecuentemente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[10]">
-                      <option value="">Miedo</option>
-                      <option value="s">Rara vez</option>
-                      <option value="r">Algunas veces</option>
-                      <option value="t">Frecuentemente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[11]">
-                      <option value="">Deseo</option>
-                      <option value="s">Poco</option>
-                      <option value="r">Algo</option>
-                      <option value="t">Mucho</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[12]">
-                      <option value="">Orgullo</option>
-                      <option value="s">Modestia</option>
-                      <option value="r">Algo de ego</option>
-                      <option value="t">Vanidad</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[13]">
-                      <option value="">Depresión</option>
-                      <option value="s">Nunca</option>
-                      <option value="r">Algunas veces</option>
-                      <option value="t">Frecuentemente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[14]">
-                      <option value="">Amor</option>
-                      <option value="s">Universal</option>
-                      <option value="r">Personal</option>
-                      <option value="t">Falta de amor</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[15]">
-                      <option value="">Conducta Violenta</option>
-                      <option value="s">Nunca</option>
-                      <option value="r">Algunas veces</option>
-                      <option value="t">Frecuentemente</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[16]">
-                      <option value="">Apego al Dinero</option>
-                      <option value="s">Poco</option>
-                      <option value="r">Algo</option>
-                      <option value="t">Mucho</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[17]">
-                      <option value="">Satisfacción</option>
-                      <option value="s">Usualmente</option>
-                      <option value="r">Parcialmente</option>
-                      <option value="t">Nunca</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[18]">
-                      <option value="">Perdón</option>
-                      <option value="s">Perdona fácilmente</option>
-                      <option value="r">Con esfuerzo</option>
-                      <option value="t">Mantiene el rencor por largo tiempo</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[19]">
-                      <option value="">Concentración</option>
-                      <option value="s">Buena</option>
-                      <option value="r">Moderada</option>
-                      <option value="t">Pobre</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[20]">
-                      <option value="">Memoria</option>
-                      <option value="s">Buena</option>
-                      <option value="r">Moderada</option>
-                      <option value="t">Pobre</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[21]">
-                      <option value="">Voluntad</option>
-                      <option value="s">Fuerte</option>
-                      <option value="r">Variable</option>
-                      <option value="t">Débil</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[22]">
-                      <option value="">Apego a la Verdad</option>
-                      <option value="s">Siempre</option>
-                      <option value="r">La mayoría de las veces</option>
-                      <option value="t">Pocas veces</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[23]">
-                      <option value="">Honestidad</option>
-                      <option value="s">Siempre</option>
-                      <option value="r">La mayoría de las veces</option>
-                      <option value="t">Pocas veces</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[24]">
-                      <option value="">Paz Mental</option>
-                      <option value="s">Generalmente</option>
-                      <option value="r">Parcialmente</option>
-                      <option value="t">Pocas veces</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[25]">
-                      <option value="">Creatividad</option>
-                      <option value="s">Alta</option>
-                      <option value="r">Moderada</option>
-                      <option value="t">Baja</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[26]">
-                      <option value="">Estudios Espirituales</option>
-                      <option value="s">Diarios</option>
-                      <option value="r">Ocasionalmente</option>
-                      <option value="t">Nunca</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[27]">
-                      <option value="">Oración, Meditación</option>
-                      <option value="s">Diaria</option>
-                      <option value="r">Ocasionalmente</option>
-                      <option value="t">Nunca</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field">
-                <div class="control is-expanded">
-                  <div class="select is-expanded">
-                    <select name="mind[]" required
-                         x-model="$store.testDoshas.fields.mind[28]">
-                      <option value="">Servicio Social</option>
-                      <option value="s">Mucho</option>
-                      <option value="r">Algo</option>
-                      <option value="t">Ninguno</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <br/>
+              {{ end }}
 
               <div class="field is-grouped is-grouped-centered">
                 <button type="button" class="button"
@@ -1033,9 +193,6 @@
             <div id="tabpanel-doshas" tabindex="0"
                  role="tabpanel" aria-labelledby="tab-doshas"
                  :hidden="tab !== 'doshas'" x-cloak>
-
-              <br/>
-
               <div class="field is-grouped is-grouped-centered">
                 <button type="button" class="button"
                         @click="changeTab('mind')">
@@ -1043,7 +200,7 @@
                 </button>
 
                 <button type="button" class="button is-primary"
-                        @click="changeTab('results')">
+                        @click="getResults(); changeTab('results')">
                   Ver resultados
                 </button>
               </div>
@@ -1052,8 +209,54 @@
             <div id="tabpanel-results" tabindex="0"
                  role="tabpanel" aria-labelledby="tab-results"
                  :hidden="tab !== 'results'" x-cloak>
+              <div class="content">
+                <p>
+                  Los resultados del test de <strong>Constitución
+                  Ayurvédica</strong> indican un Prakrutri:
+                </p>
 
-              <br/>
+                <div class="test-result">
+                  <div class="test-result-images"></div>
+
+                  <p><strong>Constitución física:</strong></p>
+
+                  <ul>
+                    <li>
+                      <strong>Vata:</strong>
+                      <span x-text="results.body.vata.toFixed(2)"></span>%
+                    </li>
+
+                    <li>
+                      <strong>Pitta:</strong>
+                      <span x-text="results.body.pitta.toFixed(2)"></span>%
+                    </li>
+
+                    <li>
+                      <strong>Kapha:</strong>
+                      <span x-text="results.body.kapha.toFixed(2)"></span>%
+                    </li>
+                  </ul>
+
+                  <p><strong>Constitución mental:</strong></p>
+
+                  <ul>
+                    <li>
+                      <strong>Sattva:</strong>
+                      <span x-text="results.mind.sattva.toFixed(2)"></span>%
+                    </li>
+
+                    <li>
+                      <strong>Rajas:</strong>
+                      <span x-text="results.mind.rajas.toFixed(2)"></span>%
+                    </li>
+
+                    <li>
+                      <strong>Tamas:</strong>
+                      <span x-text="results.mind.tamas.toFixed(2)"></span>%
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
               <div class="field is-grouped is-grouped-centered">
                 <button type="button" class="button"
@@ -1081,7 +284,7 @@
                     <div class="control is-expanded">
                       <input class="input" type="text" name="firstname"
                              placeholder="Nombres" required
-                             x-model="$store.testDoshas.fields.firstname"/>
+                             x-model="fields.firstname"/>
                     </div>
                   </div>
 
@@ -1089,7 +292,7 @@
                     <div class="control is-expanded">
                       <input class="input" type="text" name="lastname"
                              placeholder="Apellidos" required
-                             x-model="$store.testDoshas.fields.lastname"/>
+                             x-model="fields.lastname"/>
                     </div>
                   </div>
                 </div>
@@ -1105,7 +308,7 @@
                     <div class="control">
                       <div class="select">
                         <select name="countryCode" required
-                             x-model="$store.testDoshas.fields.countryCode">
+                             x-model="fields.countryCode">
                           <option value="+1">+1</option>
                           <option value="+58">+58</option>
                         </select>
@@ -1115,7 +318,7 @@
                     <div class="control is-expanded">
                       <input class="input" type="tel" name="phone"
                              placeholder="Teléfono" required
-                             x-model="$store.testDoshas.fields.phone"/>
+                             x-model="fields.phone"/>
                     </div>
                   </div>
                 </div>
@@ -1131,7 +334,7 @@
                     <div class="control is-expanded">
                       <input class="input" type="email" name="email"
                              placeholder="Correo electrónico" required
-                             x-model="$store.testDoshas.fields.email"/>
+                             x-model="fields.email"/>
                     </div>
                   </div>
                 </div>
@@ -1144,24 +347,23 @@
                 </button>
 
                 <button type="submit" class="button is-primary"
-                        :class="{ 'is-loading': !ready }" :disabled="!ready">
+                        :class="{ 'is-loading': !isReady() }"
+                        :disabled="!isReady()">
                   Enviar
                 </button>
               </div>
             </div>
 
-            <br/>
-
-            {{ $data := newScratch }}
-            {{ $data.Set "prefix" "notification" }}
-            {{ partial "components/notification.tmpl" (dict "Data" $data "Page" .) }}
+            <div class="form-notification">
+              {{ $data := newScratch }}
+              {{ $data.Set "prefix" "notification" }}
+              {{ partial "components/notification.tmpl" (dict "Data" $data "Page" .) }}
+            </div>
           </form>
         </div>
       </main>
 
       <footer class="page-footer has-text-centered">
-        <hr/>
-
         <div>
           Powered by
           <a href="https://gohugo.io">Hugo</a>,

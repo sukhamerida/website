@@ -1,52 +1,89 @@
 'use strict'
 
+import {state as jobsState} from './components/jobs'
 import {state as notificationState} from './components/notification'
 
-window.doshasState = function () {
-  const url = new URL(window.location.href)
-  const tab = url.searchParams.get('tab')
-
-  const defaultFields = {
-    countryCode: '+58',
+const _state = {
+  fields: {
     body: [],
     mind: [],
     doshas: [],
-  }
 
-  Spruce.store('testDoshas', {
-    tab: tab || 'intro',
-    fields: defaultFields,
-  }, window.localStorage)
+    firstname: '',
+    lastname: '',
+    countryCode: '+58',
+    phone: '',
+    email: '',
+  },
 
+  tab: 'intro',
+
+  results: {
+    body: {vata: 0, pitta: 0, kapha: 0},
+    mind: {sattva: 0, rajas: 0, tamas: 0},
+  },
+}
+
+function cloneObject(obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
+window.doshasState = function () {
   return {
-    fields: {},
-    tab: 'intro',
+    ..._state,
+    ...jobsState(),
     notification: notificationState(open=false),
-    ready: true,
 
     changeTab(tab) {
       this.tab = tab
       this.$refs.tabs.querySelector(`#tab-${tab}`).scrollIntoView()
     },
 
-    init() {
-      this.changeTab(this.$store.testDoshas.tab)
-      this.$watch('tab', v => this.$store.testDoshas.tab = v)
+    getResults() {
+      this.newJob()
+      this.results = cloneObject(_state.results)
+
+      for (const key of ['body', 'mind']) {
+        const total = document.querySelectorAll(`[name="${key}[]"]`).length
+
+        for (const v of this.fields[key]) {
+          if (!v)
+            continue
+
+          this.results[key][v] += 1 * 100 / total
+        }
+      }
+
+      this.finishJob()
     },
 
-    resetTest() {
-      this.ready = false
-      this.$store.testDoshas.fields = defaultFields
+    init() {
+      this.newJob()
+
+      Spruce.store('testDoshas', {
+        fields: cloneObject(_state.fields),
+        tab: _state.tab,
+      }, window.localStorage)
+
+      this.changeTab(this.$store.testDoshas.tab)
+      this.fields = this.$store.testDoshas.fields
+      this.$watch('tab', (v) => this.$store.testDoshas.tab = v)
+      this.finishJob()
+    },
+
+    reset() {
+      this.newJob()
+      Spruce.clear('testDoshas')
+      this.init()
       this.notification.open('Reiniciamos el test para ti 😄', 'is-success')
-      this.ready = true
+      this.finishJob()
     },
 
     submit() {
-      this.ready = false
-      this.$store.testDoshas.tab = 'intro'
-      this.resetTest()
-      this.notification.open('Ya enviamos los resultados a tu correo electrónico ❤️', 'is-success')
-      this.ready = true
+      this.newJob()
+      this.tab = _state.tab
+      this.notification.open('Hemos enviamos los resultados a tu correo electrónico ❤️', 'is-success')
+      this.finishJob()
     },
   }
 }

@@ -48,6 +48,7 @@ $box-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.2), 0 0px 0 1px rgba($s
 /* Main */
 
 @import "bulma/sass/components/tabs.sass";
+@import "bulma/sass/elements/content.sass";
 @import "bulma/sass/helpers/flexbox.sass";
 @import "bulma/sass/form/shared.sass";
 @import "bulma/sass/form/input-textarea.sass";
@@ -68,6 +69,10 @@ $box-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.2), 0 0px 0 1px rgba($s
 .select.is-expanded,
 .select.is-expanded select {
   width: 100%;
+}
+
+.form-notification {
+  margin-top: 1em;
 }
 
 /* Footer */
