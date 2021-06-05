@@ -41,6 +41,7 @@ window.doshasState = function () {
 
     getResults() {
       this.newJob()
+      this.notification.close()
       this.results = cloneObject(_state.results)
 
       for (const key of ['body', 'mind']) {
@@ -51,6 +52,15 @@ window.doshasState = function () {
             continue
 
           this.results[key][v] += 1 * 100 / total
+        }
+
+        if (total !== this.fields[key].length) {
+          const tab = document.querySelector(`#tab-${key}`).innerText
+
+          this.notification.open(
+            `Faltan algunos items por seleccionar en pestaña <em>${tab}</em>`,
+            'is-warning',
+          )
         }
       }
 
@@ -73,6 +83,7 @@ window.doshasState = function () {
 
     reset() {
       this.newJob()
+      this.notification.close()
       Spruce.clear('testDoshas')
       this.init()
       this.notification.open('Reiniciamos el test para ti 😄', 'is-success')
@@ -81,6 +92,7 @@ window.doshasState = function () {
 
     submit() {
       this.newJob()
+      this.notification.close()
       this.tab = _state.tab
       this.notification.open('Hemos enviamos los resultados a tu correo electrónico ❤️', 'is-success')
       this.finishJob()
