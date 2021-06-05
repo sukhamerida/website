@@ -2,7 +2,24 @@
 # yarn lockfile v1
 
 
-bulma@^0.9.1:
+"@ryangjchandler/spruce@^2.7":
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/@ryangjchandler/spruce/-/spruce-2.7.1.tgz#d61819750817567b1d12f9ce98e79910147c295a"
+  integrity sha512-UfSt3iYDCnErtK6p8OntDIbXYQMmzkozaLONckIqCkSgMSlqPd2VjHB/0IaBcFrbRHhhxHMOvieuiUoYg//s/g==
+  dependencies:
+    alpinejs "^2.5"
+
+alpinejs@^2.5:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-2.8.1.tgz#22703776639b0b2f68d619856907de9fbbd727be"
+  integrity sha512-ETJ/k0fbiBeP+OSd5Fhj70c+zb+YRzcVbyh5DVeLT3FBWMUeUvjOSWLi53IVLPSehaT2SKmB7w08WGF2jYTqNA==
+
+alpinejs@^2.8:
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-2.8.2.tgz#b14ec21ae3cd78dcee4aed0a78ed0f01b676dac4"
+  integrity sha512-5yOUtckn4CBp0qsHpo2qgjZyZit84uXvHbB7NJ27sn4FA6UlFl2i9PGUAdTXkcbFvvxDJBM+zpOD8RuNYFvQAw==
+
+bulma@^0.9:
   version "0.9.2"
   resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.9.2.tgz#340011e119c605f19b8ca886bfea595f1deaf23c"
   integrity sha512-e14EF+3VSZ488yL/lJH0tR8mFWiEQVCMi/BQUMi2TGMBOk+zrDg4wryuwm/+dRSHJw0gMawp2tsW7X1JYUCE3A==

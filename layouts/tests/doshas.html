@@ -1,0 +1,392 @@
+{{ define "styles-default" }}
+  {{ .Scratch.Set "cssSrc" (resources.Get "sass/tests.scss") }}
+  {{ .Scratch.Set "cssOutput" "css/tests.css" }}
+  {{ $sheet := partial "build-css.tmpl" . }}
+  <link rel="stylesheet" type="text/css" href="{{ $sheet.Permalink }}"/>
+{{ end }}
+
+{{ define "body" }}
+  <section class="section main-section">
+    <div class="box is-radiusless main-container">
+      <header class="page-header has-text-centered">
+        <img src="{{ .Params.image }}" alt="{{ .Title }}"/>
+
+        <h1 class="title">{{ .Title }}</h1>
+      </header>
+
+      <main class="page-body">
+        <noscript>
+          <div class="notification noscript-notification is-warning">
+            <p class="notification-body">
+              {{ i18n "JAVASCRIPT_IS_DISABLED" }}.
+            </p>
+          </div>
+        </noscript>
+
+        <div class="test-body" x-data="doshasState()" x-init="init()">
+          <form name="testDoshas" @submit.prevent="submit()">
+            <div class="tabs is-centered is-boxed" x-ref="tabs"
+                 role="tablist" aria-label="Pestañas">
+              <ul>
+                <li :class="{ 'is-active': tab === 'intro' }">
+                  <a id="tab-intro" href="#"
+                     role="tab" aria-controls="tabpanel-intro"
+                     :aria-selected="tab === 'intro' ? 'true' : 'false'"
+                     :tabindex="tab === 'intro' ? 0 : -1"
+                     @click.prevent="changeTab('intro')">
+                    Introducción
+                  </a>
+                </li>
+
+                <li :class="{ 'is-active': tab === 'body' }">
+                  <a id="tab-body" href="#"
+                     role="tab" aria-controls="tabpanel-body"
+                     :aria-selected="tab === 'body' ? 'true' : 'false'"
+                     :tabindex="tab === 'body' ? 0 : -1"
+                     @click.prevent="changeTab('body')">
+                    Constitución física
+                  </a>
+                </li>
+
+                <li :class="{ 'is-active': tab === 'mind' }">
+                  <a id="tab-mind" href="#"
+                     role="tab" aria-controls="tabpanel-mind"
+                     :aria-selected="tab === 'mind' ? 'true' : 'false'"
+                     :tabindex="tab === 'mind' ? 0 : -1"
+                     @click.prevent="changeTab('mind')">
+                    Constitución mental
+                  </a>
+                </li>
+
+                <li :class="{ 'is-active': tab === 'doshas' }">
+                  <a id="tab-doshas" href="#"
+                     role="tab" aria-controls="tabpanel-doshas"
+                     :aria-selected="tab === 'doshas' ? 'true' : 'false'"
+                     :tabindex="tab === 'doshas' ? 0 : -1"
+                     @click.prevent="changeTab('doshas')">
+                    Doshas
+                  </a>
+                </li>
+
+                <li :class="{ 'is-active': tab === 'results' }">
+                  <a id="tab-results" href="#"
+                     role="tab" aria-controls="tabpanel-results"
+                     :aria-selected="tab === 'results' ? 'true' : 'false'"
+                     :tabindex="tab === 'results' ? 0 : -1"
+                     @click.prevent="getResults(); changeTab('results')">
+                    Resultados
+                  </a>
+                </li>
+
+                <li :class="{ 'is-active': tab === 'data' }">
+                  <a id="tab-data" href="#"
+                     role="tab" aria-controls="tabpanel-data"
+                     :aria-selected="tab === 'data' ? 'true' : 'false'"
+                     :tabindex="tab === 'data' ? 0 : -1"
+                     @click.prevent="changeTab('data')">
+                    Datos personales
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div id="tabpanel-intro" tabindex="0"
+                 role="tabpanel" aria-labelledby="tab-intro"
+                 :hidden="tab !== 'intro'" x-cloak>
+              <div class="content">
+                {{ .Content }}
+              </div>
+
+              <div class="field is-grouped is-grouped-centered">
+                <button type="button" class="button"
+                        :class="{ 'is-loading': !isReady() }"
+                        :disabled="!isReady()"
+                        @click="reset()">
+                  Reiniciar test
+                </button>
+
+                <button type="button" class="button"
+                        @click="changeTab('body')">
+                  Empezar
+                </button>
+              </div>
+            </div>
+
+            <div id="tabpanel-body" tabindex="0"
+                 role="tabpanel" aria-labelledby="tab-body"
+                 :hidden="tab !== 'body'" x-cloak>
+              {{ range $i, $_ := .Params.fields.body }}
+                <div class="field">
+                  <label class="label"
+                         x-show.transition="fields.body[{{ $i }}]">
+                    {{ .label }}:
+                  </label>
+
+                  <div class="control is-expanded">
+                    <div class="select is-expanded"
+                         :class="{'is-danger': !fields.body[{{ $i }}]}">
+                      <select name="body[]" required
+                              x-model="fields.body[{{ $i }}]">
+                        <option value="">{{ .label }}</option>
+
+                        {{ range .options }}
+                          <option value="{{ .value }}">{{ .text }}</option>
+                        {{ end }}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              {{ end }}
+
+              <div class="field is-grouped is-grouped-centered">
+                <button type="button" class="button"
+                        @click="changeTab('intro')">
+                  Regresar
+                </button>
+
+                <button type="button" class="button"
+                        @click="changeTab('mind')">
+                  Siguiente
+                </button>
+              </div>
+            </div>
+
+            <div id="tabpanel-mind" tabindex="0"
+                 role="tabpanel" aria-labelledby="tab-mind"
+                 :hidden="tab !== 'mind'" x-cloak>
+              {{ range $i, $_ := .Params.fields.mind }}
+                <div class="field">
+                  <label class="label"
+                         x-show.transition="fields.mind[{{ $i }}]">
+                    {{ .label }}:
+                  </label>
+
+                  <div class="control is-expanded">
+                    <div class="select is-expanded"
+                         :class="{'is-danger': !fields.mind[{{ $i }}]}">
+                      <select name="mind[]" required
+                              x-model="fields.mind[{{ $i }}]">
+                        <option value="">{{ .label }}</option>
+
+                        {{ range .options }}
+                          <option value="{{ .value }}">{{ .text }}</option>
+                        {{ end }}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              {{ end }}
+
+              <div class="field is-grouped is-grouped-centered">
+                <button type="button" class="button"
+                        @click="changeTab('body')">
+                  Regresar
+                </button>
+
+                <button type="button" class="button"
+                        @click="changeTab('doshas')">
+                  Siguiente
+                </button>
+              </div>
+            </div>
+
+            <div id="tabpanel-doshas" tabindex="0"
+                 role="tabpanel" aria-labelledby="tab-doshas"
+                 :hidden="tab !== 'doshas'" x-cloak>
+              <div class="field is-grouped is-grouped-centered">
+                <button type="button" class="button"
+                        @click="changeTab('mind')">
+                  Regresar
+                </button>
+
+                <button type="button" class="button is-primary"
+                        @click="getResults(); changeTab('results')">
+                  Ver resultados
+                </button>
+              </div>
+            </div>
+
+            <div id="tabpanel-results" tabindex="0"
+                 role="tabpanel" aria-labelledby="tab-results"
+                 :hidden="tab !== 'results'" x-cloak>
+              <div class="content">
+                <p>
+                  Los resultados del test de <strong>Constitución
+                  Ayurvédica</strong> indican un Prakrutri:
+                </p>
+
+                <div class="test-result">
+                  <div class="test-result-images"></div>
+
+                  <p><strong>Constitución física:</strong></p>
+
+                  <ul>
+                    <li>
+                      <strong>Vata:</strong>
+                      <span x-text="results.body.vata.toFixed(2)"></span>%
+                    </li>
+
+                    <li>
+                      <strong>Pitta:</strong>
+                      <span x-text="results.body.pitta.toFixed(2)"></span>%
+                    </li>
+
+                    <li>
+                      <strong>Kapha:</strong>
+                      <span x-text="results.body.kapha.toFixed(2)"></span>%
+                    </li>
+                  </ul>
+
+                  <p><strong>Constitución mental:</strong></p>
+
+                  <ul>
+                    <li>
+                      <strong>Sattva:</strong>
+                      <span x-text="results.mind.sattva.toFixed(2)"></span>%
+                    </li>
+
+                    <li>
+                      <strong>Rajas:</strong>
+                      <span x-text="results.mind.rajas.toFixed(2)"></span>%
+                    </li>
+
+                    <li>
+                      <strong>Tamas:</strong>
+                      <span x-text="results.mind.tamas.toFixed(2)"></span>%
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="field is-grouped is-grouped-centered">
+                <button type="button" class="button"
+                        @click="changeTab('doshas')">
+                  Regresar
+                </button>
+
+                <button type="button" class="button is-primary"
+                        @click="changeTab('data')">
+                  Guardar
+                </button>
+              </div>
+            </div>
+
+            <div id="tabpanel-data" tabindex="0"
+                 role="tabpanel" aria-labelledby="tab-data"
+                 :hidden="tab !== 'data'" x-cloak>
+              <div class="field is-horizontal is-align-items-center">
+                <div class="field-label">
+                  <label class="label">Nombre:</label>
+                </div>
+
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control is-expanded">
+                      <input class="input" type="text" name="firstname"
+                             placeholder="Nombres" required
+                             x-model="fields.firstname"/>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <div class="control is-expanded">
+                      <input class="input" type="text" name="lastname"
+                             placeholder="Apellidos" required
+                             x-model="fields.lastname"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field is-horizontal is-align-items-center">
+                <div class="field-label">
+                  <label class="label">Teléfono:</label>
+                </div>
+
+                <div class="field-body">
+                  <div class="field has-addons">
+                    <div class="control">
+                      <div class="select">
+                        <select name="countryCode" required
+                             x-model="fields.countryCode">
+                          <option value="+1">+1</option>
+                          <option value="+58">+58</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="control is-expanded">
+                      <input class="input" type="tel" name="phone"
+                             placeholder="Teléfono" required
+                             x-model="fields.phone"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field is-horizontal is-align-items-center">
+                <div class="field-label">
+                  <label class="label">Correo electrónico:</label>
+                </div>
+
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control is-expanded">
+                      <input class="input" type="email" name="email"
+                             placeholder="Correo electrónico" required
+                             x-model="fields.email"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field is-grouped is-grouped-centered">
+                <button type="button" class="button"
+                        @click="changeTab('results')">
+                  Regresar
+                </button>
+
+                <button type="submit" class="button is-primary"
+                        :class="{ 'is-loading': !isReady() }"
+                        :disabled="!isReady()">
+                  Enviar
+                </button>
+              </div>
+            </div>
+
+            <div class="form-notification">
+              {{ $data := newScratch }}
+              {{ $data.Set "prefix" "notification" }}
+              {{ partial "components/notification.tmpl" (dict "Data" $data "Page" .) }}
+            </div>
+          </form>
+        </div>
+      </main>
+
+      <footer class="page-footer has-text-centered">
+        <div>
+          Powered by
+          <a href="https://gohugo.io">Hugo</a>,
+          <a href="https://bulma.io">Bulma</a>,
+          <a href="https://netlify.com/">Netlify</a>
+        </div>
+
+        <div class="copyright">
+          Copyright &copy; {{ site.Params.copyright }}
+        </div>
+
+        <div class="devs">
+          <a target="_blank" rel="noopener noreferrer"
+             href="https://ntrrg.dev">@ntrrg</a>
+        </div>
+      </footer>
+    </div>
+  </section>
+{{ end }}
+
+{{ define "scripts" }}
+  {{ .Scratch.Set "jsSrc" (resources.Get "js/test-doshas.js") }}
+  {{ $script := partial "build-js.tmpl" . }}
+  <script defer src="{{ $script.Permalink }}"></script>
+{{ end }}
+

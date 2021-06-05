@@ -1,0 +1,66 @@
+site_url: https://www.sukhamerida.com/
+logo_url: /uploads/site-image.png
+locale: es
+publish_mode: editorial_workflow
+media_folder: static/uploads
+public_folder: /uploads
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: _
+collections:
+  - name: tests-es
+    label: Tests (ES)
+    files:
+      - name: test-doshas-es
+        label: Doshas
+        file: content/test/doshas/index.es.md
+        fields:
+          - {name: title, label: Título, widget: string}
+          - {name: image, label: Imágen, widget: image}
+          - {name: description, label: Descripción, widget: text}
+          - name: fields
+            label: Campos
+            widget: object
+            fields:
+              - name: body
+                label: Constitución física
+                widget: list
+                summary: "{{ fields.label }}"
+                fields:
+                  - {name: label, label: Texto, widget: string}
+                  - name: options
+                    label: Opciones
+                    widget: list
+                    summary: "{{ fields.label }} ({{ fields.value }})"
+                    fields:
+                      - {name: text, label: Texto, widget: string}
+                      - name: value
+                        label: Texto
+                        widget: select
+                        options:
+                          - { label: "Vata", value: "vata" }
+                          - { label: "Pitta", value: "pitta" }
+                          - { label: "Kapha", value: "kapha" }
+              - name: mind
+                label: Constitución mental
+                widget: list
+                summary: "{{ fields.label }}"
+                fields:
+                  - {name: label, label: Texto, widget: string}
+                  - name: options
+                    label: Opciones
+                    widget: list
+                    summary: "{{ fields.label }} ({{ fields.value }})"
+                    fields:
+                      - {name: text, label: Texto, widget: string}
+                      - name: value
+                        label: Texto
+                        widget: select
+                        options:
+                          - { label: "Sattva", value: "sattva" }
+                          - { label: "Rajas", value: "rajas" }
+                          - { label: "Tamas", value: "tamas" }
+backend:
+  name: git-gateway
+  branch: main

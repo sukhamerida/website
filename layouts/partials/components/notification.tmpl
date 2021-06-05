@@ -1,0 +1,35 @@
+{{ $prefix := .Data.Get "prefix" | default "" }}
+{{ $open := .Data.Get "open" | default true }}
+{{ $message := .Data.Get "message" | default "" }}
+{{ $classes := .Data.Get "classes" | default "" }}
+{{ $loadAssets := .Data.Get "loadAssets" | default false }}
+
+{{ if ne $prefix "" }}
+  {{ $prefix = printf "%s." $prefix }}
+{{ end }}
+
+<div class="notification {{ $classes }}" :class="{{ $prefix }}classes"
+     {{ if eq $prefix "" }}
+       x-data="components.get('notification')(
+         {{ $open }},
+         '{{ $message }}',
+         '{{ $classes }}'
+       )"
+     {{ end }}
+     x-show.transition="{{ $prefix }}isOpen" x-cloak>
+  <button type="button" class="delete"
+          @click="{{ $prefix }}close()"></button>
+
+  <div class="notification-body" x-html="{{ $prefix }}message"></div>
+</div>
+
+{{ if eq $loadAssets true }}
+  {{ if ne (.Page.Scratch.Get "c8s-notification") true }}
+    {{ .Data.Set "jsSrc" (resources.Get "js/components/notification.js") }}
+    {{ $script := partial "build-js.tmpl" (dict "Scratch" .Data) }}
+    <script defer src="{{ $script.Permalink }}"></script>
+
+    {{ .Page.Scratch.Set "c8s-notification" true }}
+  {{ end }}
+{{ end }}
+

@@ -1,11 +1,10 @@
 @charset "utf-8";
 
-$family-primary: sans-serif;
-$family-secondary: sans-serif;
+[x-cloak] {
+  display: none !important;
+}
 
-$body-background-color: #fff;
-$body-size: 20px;
-
+@import "variables.scss";
 @import "bulma/sass/utilities/_all.sass";
 @import "bulma/sass/base/_all.sass";
 @import "bulma/sass/layout/hero.sass";
@@ -21,10 +20,15 @@ $body-size: 20px;
 .privacy-alert {
   width: 100%;
 
-  margin-bottom: 0em !important;
-
   position: fixed;
   left: 0%;
-  bottom: 0%;
+  bottom: 5%;
+}
+
+.privacy-alert .message {
+  width: 90vw;
+  max-width: 30em;
+
+  margin: 0 auto;
 }
 
