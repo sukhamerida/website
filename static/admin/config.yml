@@ -14,11 +14,12 @@ collections:
     files:
       - name: test-doshas-es
         label: Doshas
-        file: content/test/doshas/index.es.md
+        file: content/tests/doshas/index.es.md
         fields:
           - {name: title, label: Título, widget: string}
           - {name: image, label: Imágen, widget: image}
           - {name: description, label: Descripción, widget: text}
+          - {name: body, label: Introdución, widget: markdown}
           - name: fields
             label: Campos
             widget: object
@@ -26,17 +27,17 @@ collections:
               - name: body
                 label: Constitución física
                 widget: list
-                summary: "{{ fields.label }}"
+                summary: "{{fields.label}}"
                 fields:
                   - {name: label, label: Texto, widget: string}
                   - name: options
                     label: Opciones
                     widget: list
-                    summary: "{{ fields.label }} ({{ fields.value }})"
+                    summary: "{{fields.text}} ({{fields.value}})"
                     fields:
                       - {name: text, label: Texto, widget: string}
                       - name: value
-                        label: Texto
+                        label: Valor
                         widget: select
                         options:
                           - { label: "Vata", value: "vata" }
@@ -45,17 +46,17 @@ collections:
               - name: mind
                 label: Constitución mental
                 widget: list
-                summary: "{{ fields.label }}"
+                summary: "{{fields.label}}"
                 fields:
                   - {name: label, label: Texto, widget: string}
                   - name: options
                     label: Opciones
                     widget: list
-                    summary: "{{ fields.label }} ({{ fields.value }})"
+                    summary: "{{fields.text}} ({{fields.value}})"
                     fields:
                       - {name: text, label: Texto, widget: string}
                       - name: value
-                        label: Texto
+                        label: Valor
                         widget: select
                         options:
                           - { label: "Sattva", value: "sattva" }
