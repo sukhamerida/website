@@ -123,6 +123,51 @@
                   </label>
 
                   <div class="control is-expanded">
+                    <div class="dropdown is-expanded"
+                         :class="{'is-danger': !fields.body[{{ $i }}]}"
+                         x-ref="dropdownBody{{ $i }}"
+                         @click.away="$refs['dropdownBody{{ $i }}'].classList.remove('is-active')">
+                      <div class="dropdown-trigger">
+                        <button class="button has-text-left-aligned"
+                                aria-haspopup="true"
+                                aria-controls="dropdown-body-{{ $i }}"
+                                x-text="$refs['dropdownBody{{ $i }}' + fields.body[{{ $i }}]] ? $refs['dropdownBody{{ $i }}' + fields.body[{{ $i }}]].innerText : '{{ .label }}'"
+                                @click="$refs['dropdownBody{{ $i }}'].classList.toggle('is-active')">
+                        </button>
+                      </div>
+
+                      <div class="dropdown-menu" role="menu"
+                           id="dropdown-body-{{ $i }}">
+                        <div class="dropdown-content">
+                          {{ range $j, $_ := .options }}
+                            {{ if gt $j 0 }}
+                              <hr class="dropdown-divider"/>
+                            {{ end }}
+
+                            <label class="dropdown-item"
+                                   x-ref="dropdownBody{{ $i }}{{ .value }}"
+                                   @click="$refs['dropdownBody{{ $i }}'].classList.remove('is-active')">
+                              <input type="radio" name="body[]"
+                                     value="{{ .value }}" hidden
+                                     x-model="fields.body[{{ $i }}]"/>
+
+                              {{ .text }}
+                            </label>
+                          {{ end }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--
+                <div class="field">
+                  <label class="label"
+                         x-show.transition="fields.body[{{ $i }}]">
+                    {{ .label }}:
+                  </label>
+
+                  <div class="control is-expanded">
                     <div class="select is-expanded"
                          :class="{'is-danger': !fields.body[{{ $i }}]}">
                       <select name="body[]" required
@@ -136,6 +181,7 @@
                     </div>
                   </div>
                 </div>
+                -->
               {{ end }}
 
               <div class="field is-grouped is-grouped-centered">

@@ -57,6 +57,7 @@ $box-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.2), 0 0px 0 1px rgba($s
 @import "bulma/sass/elements/button.sass";
 @import "bulma/sass/elements/notification.sass";
 @import "bulma/sass/elements/other.sass";
+@import "bulma/sass/components/dropdown.sass";
 
 .noscript-notification {
   margin-bottom: 1em;
@@ -69,6 +70,27 @@ $box-shadow: 0 0.5em 1em -0.125em rgba($scheme-invert, 0.2), 0 0px 0 1px rgba($s
 .select.is-expanded,
 .select.is-expanded select {
   width: 100%;
+}
+
+.dropdown.is-danger .dropdown-trigger .button {
+  border-color: $danger;
+}
+
+.dropdown.is-expanded,
+.dropdown.is-expanded .dropdown-trigger,
+.dropdown.is-expanded .dropdown-trigger .button,
+.dropdown.is-expanded .dropdown-menu,
+.dropdown.is-expanded .dropdown-menu .dropdown-item label {
+  width: 100%;
+}
+
+.dropdown.is-expanded .dropdown-trigger .button {
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.dropdown.is-expanded .dropdown-menu .dropdown-item label {
+  display: block;
 }
 
 .form-notification {

@@ -58,7 +58,8 @@ window.doshasState = function () {
           const tab = document.querySelector(`#tab-${key}`).innerText
 
           this.notification.open(
-            `Faltan algunos items por seleccionar en pestaña <em>${tab}</em>`,
+            `Faltan algunos items por seleccionar en la pestaña 
+            <em>${tab}</em>`,
             'is-warning',
           )
         }
