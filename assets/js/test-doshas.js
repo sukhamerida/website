@@ -36,6 +36,7 @@ window.doshasState = function () {
 
     changeTab(tab) {
       this.tab = tab
+      this.notification.close()
       this.$refs.tabs.querySelector(`#tab-${tab}`).scrollIntoView()
     },
 
@@ -45,7 +46,7 @@ window.doshasState = function () {
       this.results = cloneObject(_state.results)
 
       for (const key of ['body', 'mind']) {
-        const total = document.querySelectorAll(`[name="${key}[]"]`).length
+        const total = document.querySelectorAll(`[name="${key}[]"]`).length / 3
 
         for (const v of this.fields[key]) {
           if (!v)
@@ -57,11 +58,7 @@ window.doshasState = function () {
         if (total !== this.fields[key].length) {
           const tab = document.querySelector(`#tab-${key}`).innerText
 
-          this.notification.open(
-            `Faltan algunos items por seleccionar en la pestaña 
-            <em>${tab}</em>`,
-            'is-warning',
-          )
+          this.notification.open(`Faltan algunos items por seleccionar en la pestaña <em>${tab}</em>`, 'is-warning')
         }
       }
 
