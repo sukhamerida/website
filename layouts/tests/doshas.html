@@ -5,6 +5,15 @@
   <link rel="stylesheet" type="text/css" href="{{ $sheet.Permalink }}"/>
 {{ end }}
 
+{{ define "test-doshas-button" }}
+  <button type="button" class="button {{ .classes }}"
+          :class="{ 'is-loading': !isReady() }"
+          :disabled="!isReady()"
+          @click="{{ .action }}">
+    {{ .label }}
+  </button>
+{{ end }}
+
 {{ define "body" }}
   <section class="section main-section">
     <div class="box is-radiusless main-container">
@@ -23,323 +32,248 @@
           </div>
         </noscript>
 
+        {{ $sections := .Params.sections }}
+
         <div class="test-body" x-data="doshasState()" x-init="init()">
-          <form name="testDoshas" @submit.prevent="submit()">
-            <div class="tabs is-centered is-boxed" x-ref="tabs"
-                 role="tablist" aria-label="Pestañas">
-              <ul>
-                <li :class="{ 'is-active': tab === 'intro' }">
-                  <a id="tab-intro" href="#"
-                     role="tab" aria-controls="tabpanel-intro"
-                     :aria-selected="tab === 'intro' ? 'true' : 'false'"
-                     :tabindex="tab === 'intro' ? 0 : -1"
-                     @click.prevent="changeTab('intro')">
-                    Introducción
-                  </a>
+          <div class="tabs is-centered is-boxed" x-ref="tabs"
+               role="tablist" aria-label="Pestañas">
+            <ul>
+              {{ range $sections }}
+                <li :class="{ 'is-active': tab === '{{ .name }}' }">
+                  <a id="tab-{{ .name }}" href="#"
+                     role="tab" aria-controls="tabpanel-{{ .name }}"
+                     :aria-selected="tab === '{{ .name }}' ? 'true' : 'false'"
+                     :tabindex="tab === '{{ .name }}' ? 0 : -1"
+                     @click.prevent="changeTab('{{ .name }}')">{{ .label }}</a>
                 </li>
-
-                <li :class="{ 'is-active': tab === 'body' }">
-                  <a id="tab-body" href="#"
-                     role="tab" aria-controls="tabpanel-body"
-                     :aria-selected="tab === 'body' ? 'true' : 'false'"
-                     :tabindex="tab === 'body' ? 0 : -1"
-                     @click.prevent="changeTab('body')">
-                    Constitución física
-                  </a>
-                </li>
-
-                <li :class="{ 'is-active': tab === 'mind' }">
-                  <a id="tab-mind" href="#"
-                     role="tab" aria-controls="tabpanel-mind"
-                     :aria-selected="tab === 'mind' ? 'true' : 'false'"
-                     :tabindex="tab === 'mind' ? 0 : -1"
-                     @click.prevent="changeTab('mind')">
-                    Constitución mental
-                  </a>
-                </li>
-
-                <li :class="{ 'is-active': tab === 'results' }">
-                  <a id="tab-results" href="#"
-                     role="tab" aria-controls="tabpanel-results"
-                     :aria-selected="tab === 'results' ? 'true' : 'false'"
-                     :tabindex="tab === 'results' ? 0 : -1"
-                     @click.prevent="changeTab('results'); getResults()">
-                    Resultados
-                  </a>
-                </li>
-
-                <li :class="{ 'is-active': tab === 'data' }">
-                  <a id="tab-data" href="#"
-                     role="tab" aria-controls="tabpanel-data"
-                     :aria-selected="tab === 'data' ? 'true' : 'false'"
-                     :tabindex="tab === 'data' ? 0 : -1"
-                     @click.prevent="changeTab('data')">
-                    Datos personales
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div id="tabpanel-intro" tabindex="0"
-                 role="tabpanel" aria-labelledby="tab-intro"
-                 :hidden="tab !== 'intro'" x-cloak>
-              <div class="content">
-                {{ .Content }}
-              </div>
-
-              <div class="field is-grouped is-grouped-centered">
-                <button type="button" class="button"
-                        :class="{ 'is-loading': !isReady() }"
-                        :disabled="!isReady()"
-                        @click="reset()">
-                  Reiniciar test
-                </button>
-
-                <button type="button" class="button"
-                        @click="changeTab('body')">
-                  Empezar
-                </button>
-              </div>
-            </div>
-
-            <div id="tabpanel-body" tabindex="0"
-                 role="tabpanel" aria-labelledby="tab-body"
-                 :hidden="tab !== 'body'" x-cloak>
-              {{ range $i, $_ := .Params.sections.body }}
-                <div class="field">
-                  <label class="label"
-                         x-show.transition="fields.body[{{ $i }}]">
-                    {{ .label }}:
-                  </label>
-
-                  <div class="control is-expanded">
-                    <div class="dropdown is-expanded"
-                         :class="{'is-danger': !fields.body[{{ $i }}]}"
-                         x-ref="dropdownBody{{ $i }}"
-                         @click.away="$refs['dropdownBody{{ $i }}'].classList.remove('is-active')">
-                      <div class="dropdown-trigger">
-                        <button class="button has-text-left-aligned"
-                                aria-haspopup="true"
-                                aria-controls="dropdown-body-{{ $i }}"
-                                x-text="$refs['dropdownBody{{ $i }}' + fields.body[{{ $i }}]] ? $refs['dropdownBody{{ $i }}' + fields.body[{{ $i }}]].innerText : '{{ .label }}'"
-                                @click="$refs['dropdownBody{{ $i }}'].classList.toggle('is-active')">
-                        </button>
-                      </div>
-
-                      <div class="dropdown-menu" role="menu"
-                           id="dropdown-body-{{ $i }}">
-                        <div class="dropdown-content">
-                          {{ range $j, $_ := .options }}
-                            {{ if gt $j 0 }}
-                              <hr class="dropdown-divider"/>
-                            {{ end }}
-
-                            <label class="dropdown-item"
-                                   x-ref="dropdownBody{{ $i }}{{ .value }}"
-                                   @click="$refs['dropdownBody{{ $i }}'].classList.remove('is-active')">
-                              <input type="radio" name="body[]"
-                                     value="{{ .value }}" hidden
-                                     x-model="fields.body[{{ $i }}]"/>
-
-                              {{ .text }}
-                            </label>
-                          {{ end }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!--
-                <div class="field">
-                  <label class="label"
-                         x-show.transition="fields.body[{{ $i }}]">
-                    {{ .label }}:
-                  </label>
-
-                  <div class="control is-expanded">
-                    <div class="select is-expanded"
-                         :class="{'is-danger': !fields.body[{{ $i }}]}">
-                      <select name="body[]" required
-                              x-model="fields.body[{{ $i }}]">
-                        <option value="">{{ .label }}</option>
-
-                        {{ range .options }}
-                          <option value="{{ .value }}">{{ .text }}</option>
-                        {{ end }}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                -->
               {{ end }}
+            </ul>
+          </div>
 
-              <div class="field is-grouped is-grouped-centered">
-                <button type="button" class="button"
-                        @click="changeTab('intro')">
-                  Regresar
-                </button>
+          <div id="tabpanel-intro" tabindex="0"
+               role="tabpanel" aria-labelledby="tab-intro"
+               :hidden="tab !== 'intro'" x-cloak>
+            {{ $introSec := index (where $sections "name" "intro") 0 }}
 
-                <button type="button" class="button"
-                        @click="changeTab('mind')">
-                  Siguiente
-                </button>
-              </div>
+            <div class="content">
+              {{ .Content }}
             </div>
 
-            <div id="tabpanel-mind" tabindex="0"
-                 role="tabpanel" aria-labelledby="tab-mind"
-                 :hidden="tab !== 'mind'" x-cloak>
-              {{ range $i, $_ := .Params.sections.mind }}
-                <div class="field">
-                  <label class="label"
-                         x-show.transition="fields.mind[{{ $i }}]">
-                    {{ .label }}:
-                  </label>
-
-                  <div class="control is-expanded">
-                    <div class="dropdown is-expanded"
-                         :class="{'is-danger': !fields.mind[{{ $i }}]}"
-                         x-ref="dropdownMind{{ $i }}"
-                         @click.away="$refs['dropdownMind{{ $i }}'].classList.remove('is-active')">
-                      <div class="dropdown-trigger">
-                        <button class="button has-text-left-aligned"
-                                aria-haspopup="true"
-                                aria-controls="dropdown-mind-{{ $i }}"
-                                x-text="$refs['dropdownMind{{ $i }}' + fields.mind[{{ $i }}]] ? $refs['dropdownMind{{ $i }}' + fields.mind[{{ $i }}]].innerText : '{{ .label }}'"
-                                @click="$refs['dropdownMind{{ $i }}'].classList.toggle('is-active')">
-                        </button>
-                      </div>
-
-                      <div class="dropdown-menu" role="menu"
-                           id="dropdown-mind-{{ $i }}">
-                        <div class="dropdown-content">
-                          {{ range $j, $_ := .options }}
-                            {{ if gt $j 0 }}
-                              <hr class="dropdown-divider"/>
-                            {{ end }}
-
-                            <label class="dropdown-item"
-                                   x-ref="dropdownMind{{ $i }}{{ .value }}"
-                                   @click="$refs['dropdownMind{{ $i }}'].classList.remove('is-active')">
-                              <input type="radio" name="mind[]"
-                                     value="{{ .value }}" hidden
-                                     x-model="fields.mind[{{ $i }}]"/>
-
-                              {{ .text }}
-                            </label>
-                          {{ end }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!--
-                <div class="field">
-                  <label class="label"
-                         x-show.transition="fields.mind[{{ $i }}]">
-                    {{ .label }}:
-                  </label>
-
-                  <div class="control is-expanded">
-                    <div class="select is-expanded"
-                         :class="{'is-danger': !fields.mind[{{ $i }}]}">
-                      <select name="mind[]" required
-                              x-model="fields.mind[{{ $i }}]">
-                        <option value="">{{ .label }}</option>
-
-                        {{ range .options }}
-                          <option value="{{ .value }}">{{ .text }}</option>
-                        {{ end }}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                -->
+            <div class="field is-grouped is-grouped-centered">
+              {{ range $introSec.buttons }}
+                {{ template "test-doshas-button" . }}
               {{ end }}
-
-              <div class="field is-grouped is-grouped-centered">
-                <button type="button" class="button"
-                        @click="changeTab('body')">
-                  Regresar
-                </button>
-
-                <button type="button" class="button is-primary"
-                        @click="changeTab('results'); getResults()">
-                  Ver resultados
-                </button>
-              </div>
             </div>
+          </div>
 
-            <div id="tabpanel-results" tabindex="0"
-                 role="tabpanel" aria-labelledby="tab-results"
-                 :hidden="tab !== 'results'" x-cloak>
-              <div class="content">
-                <p>
-                  Los resultados del test de <strong>Constitución
-                  Ayurvédica</strong> indican un Prakriti:
-                </p>
+          <div id="tabpanel-body" tabindex="0"
+               role="tabpanel" aria-labelledby="tab-body"
+               :hidden="tab !== 'body'" x-cloak>
+            {{ $bodySec := index (where $sections "name" "body") 0 }}
 
-                <div class="test-result">
-                  <div class="test-result-images"></div>
+            {{ range $i, $field := $bodySec.fields }}
+              {{ $store := printf "$store.testDoshas.values.body['%s']" .label }}
 
-                  <p><strong>Constitución física:</strong></p>
+              <div class="field" x-data="{open: false, value: {{ $store }}}">
+                <label class="label" x-show.transition="value">
+                  {{ .label }}:
+                </label>
 
-                  <ul>
-                    <li>
-                      <strong>Vata:</strong>
-                      <span x-text="results.body.vata.toFixed(2)"></span>%
-                    </li>
+                <div class="control is-expanded">
+                  <div class="dropdown is-expanded"
+                       :class="{'is-active': open, 'is-danger': !value}"
+                       @click.away="open = false">
+                    <div class="dropdown-trigger">
+                      {{ $ref := printf "$refs['dropdownItem'+%s]" $store }}
 
-                    <li>
-                      <strong>Pitta:</strong>
-                      <span x-text="results.body.pitta.toFixed(2)"></span>%
-                    </li>
+                      <button type="button"
+                              class="button has-text-left-aligned"
+                              aria-haspopup="true"
+                              aria-controls="dropdown-body-{{ $i }}"
+                              x-text="{{ $ref }} ? {{ $ref }}.innerText : '{{ .label }}'"
+                              @click="open = !open">
+                      </button>
+                    </div>
 
-                    <li>
-                      <strong>Kapha:</strong>
-                      <span x-text="results.body.kapha.toFixed(2)"></span>%
-                    </li>
-                  </ul>
+                    <div class="dropdown-menu" role="menu"
+                         id="dropdown-body-{{ $i }}">
+                      <div class="dropdown-content">
+                        {{ range $j, $_ := .options }}
+                          {{ if gt $j 0 }}
+                            <hr class="dropdown-divider"/>
+                          {{ end }}
 
-                  <p><strong>Constitución mental:</strong></p>
-
-                  <ul>
-                    <li>
-                      <strong>Sattva:</strong>
-                      <span x-text="results.mind.sattva.toFixed(2)"></span>%
-                    </li>
-
-                    <li>
-                      <strong>Rajas:</strong>
-                      <span x-text="results.mind.rajas.toFixed(2)"></span>%
-                    </li>
-
-                    <li>
-                      <strong>Tamas:</strong>
-                      <span x-text="results.mind.tamas.toFixed(2)"></span>%
-                    </li>
-                  </ul>
+                          <div class="dropdown-item"
+                               x-ref="dropdownItem{{ .value }}"
+                               @click="
+                                 value = '{{ .value }}'
+                                 $store.testDoshas.values.body['{{ $field.label }}'] = '{{ .value }}'
+                                 open = false
+                               ">{{ .text }}</div>
+                        {{ end }}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="field is-grouped is-grouped-centered">
-                <button type="button" class="button"
-                        @click="changeTab('mind')">
-                  Regresar
-                </button>
+              <!--
+              <div class="field">
+                <label class="label"
+                       x-show.transition="body[{{ $i }}]">
+                  {{ .label }}:
+                </label>
 
-                <button type="button" class="button is-primary"
-                        @click="changeTab('data')">
-                  Guardar
-                </button>
+                <div class="control is-expanded">
+                  <div class="select is-expanded"
+                       :class="{'is-danger': !body[{{ $i }}]}">
+                    <select name="body[]" required
+                            x-model="body[{{ $i }}]">
+                      <option value="">{{ .label }}</option>
+
+                      {{ range .options }}
+                        <option value="{{ .value }}">{{ .text }}</option>
+                      {{ end }}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              -->
+            {{ end }}
+
+            <div class="field is-grouped is-grouped-centered">
+              {{ range $bodySec.buttons }}
+                {{ template "test-doshas-button" . }}
+              {{ end }}
+            </div>
+          </div>
+
+          <div id="tabpanel-mind" tabindex="0"
+               role="tabpanel" aria-labelledby="tab-mind"
+               :hidden="tab !== 'mind'" x-cloak>
+            {{ $mindSec := index (where $sections "name" "mind") 0 }}
+
+            {{ range $i, $field := $mindSec.fields }}
+              {{ $store := printf "$store.testDoshas.values.mind['%s']" .label }}
+
+              <div class="field" x-data="{open: false, value: {{ $store }}}">
+                <label class="label" x-show.transition="value">
+                  {{ .label }}:
+                </label>
+
+                <div class="control is-expanded">
+                  <div class="dropdown is-expanded"
+                       :class="{'is-active': open, 'is-danger': !value}"
+                       @click.away="open = false">
+                    <div class="dropdown-trigger">
+                      {{ $ref := printf "$refs['dropdownItem'+%s]" $store }}
+
+                      <button type="button"
+                              class="button has-text-left-aligned"
+                              aria-haspopup="true"
+                              aria-controls="dropdown-mind-{{ $i }}"
+                              x-text="{{ $ref }} ? {{ $ref }}.innerText : '{{ .label }}'"
+                              @click="open = !open">
+                      </button>
+                    </div>
+
+                    <div class="dropdown-menu" role="menu"
+                         id="dropdown-mind-{{ $i }}">
+                      <div class="dropdown-content">
+                        {{ range $j, $_ := .options }}
+                          {{ if gt $j 0 }}
+                            <hr class="dropdown-divider"/>
+                          {{ end }}
+
+                          <div class="dropdown-item"
+                               x-ref="dropdownItem{{ .value }}"
+                               @click="
+                                 value = '{{ .value }}'
+                                 $store.testDoshas.values.mind['{{ $field.label }}'] = '{{ .value }}'
+                                 open = false
+                               ">{{ .text }}</div>
+                        {{ end }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {{ end }}
+
+            <div class="field is-grouped is-grouped-centered">
+              {{ range $mindSec.buttons }}
+                {{ template "test-doshas-button" . }}
+              {{ end }}
+            </div>
+          </div>
+
+          <div id="tabpanel-results" tabindex="0"
+               role="tabpanel" aria-labelledby="tab-results"
+               :hidden="tab !== 'results'" x-cloak>
+            {{ $resultsSec := index (where $sections "name" "results") 0 }}
+
+            <div class="content">
+              <p>
+                Los resultados del test de <strong>Constitución
+                Ayurvédica</strong> indican un Prakriti:
+              </p>
+
+              <div class="test-result">
+                <div class="test-result-images"></div>
+
+                <p><strong>Constitución física:</strong></p>
+
+                <ul>
+                  <li>
+                    <strong>Vata:</strong>
+                    <span x-text="results.body.vata.toFixed(2)"></span>%
+                  </li>
+
+                  <li>
+                    <strong>Pitta:</strong>
+                    <span x-text="results.body.pitta.toFixed(2)"></span>%
+                  </li>
+
+                  <li>
+                    <strong>Kapha:</strong>
+                    <span x-text="results.body.kapha.toFixed(2)"></span>%
+                  </li>
+                </ul>
+
+                <p><strong>Constitución mental:</strong></p>
+
+                <ul>
+                  <li>
+                    <strong>Sattva:</strong>
+                    <span x-text="results.mind.sattva.toFixed(2)"></span>%
+                  </li>
+
+                  <li>
+                    <strong>Rajas:</strong>
+                    <span x-text="results.mind.rajas.toFixed(2)"></span>%
+                  </li>
+
+                  <li>
+                    <strong>Tamas:</strong>
+                    <span x-text="results.mind.tamas.toFixed(2)"></span>%
+                  </li>
+                </ul>
               </div>
             </div>
 
-            <div id="tabpanel-data" tabindex="0"
-                 role="tabpanel" aria-labelledby="tab-data"
-                 :hidden="tab !== 'data'" x-cloak>
+            <div class="field is-grouped is-grouped-centered">
+              {{ range $resultsSec.buttons }}
+                {{ template "test-doshas-button" . }}
+              {{ end }}
+            </div>
+          </div>
+
+          <div id="tabpanel-data" tabindex="0"
+               role="tabpanel" aria-labelledby="tab-data"
+               :hidden="tab !== 'data'" x-cloak>
+            {{ $dataSec := index (where $sections "name" "data") 0 }}
+
+            <form name="testDoshas" @submit.prevent="submit()">
               <div class="field is-horizontal is-align-items-center">
                 <div class="field-label">
                   <label class="label">Nombre:</label>
@@ -366,6 +300,23 @@
 
               <div class="field is-horizontal is-align-items-center">
                 <div class="field-label">
+                  <label class="label">Correo electrónico:</label>
+                </div>
+
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control is-expanded">
+                      <input class="input" type="email" name="email"
+                             placeholder="Correo electrónico" required
+                             x-model="fields.email"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--
+              <div class="field is-horizontal is-align-items-center">
+                <div class="field-label">
                   <label class="label">Teléfono:</label>
                 </div>
 
@@ -383,49 +334,27 @@
 
                     <div class="control is-expanded">
                       <input class="input" type="tel" name="phone"
-                             placeholder="Teléfono" required
+                             placeholder="Teléfono"
                              x-model="fields.phone"/>
                     </div>
                   </div>
                 </div>
               </div>
-
-              <div class="field is-horizontal is-align-items-center">
-                <div class="field-label">
-                  <label class="label">Correo electrónico:</label>
-                </div>
-
-                <div class="field-body">
-                  <div class="field">
-                    <div class="control is-expanded">
-                      <input class="input" type="email" name="email"
-                             placeholder="Correo electrónico" required
-                             x-model="fields.email"/>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              -->
 
               <div class="field is-grouped is-grouped-centered">
-                <button type="button" class="button"
-                        @click="changeTab('results')">
-                  Regresar
-                </button>
-
-                <button type="submit" class="button is-primary"
-                        :class="{ 'is-loading': !isReady() }"
-                        :disabled="!isReady()">
-                  Enviar
-                </button>
+                {{ range $dataSec.buttons }}
+                {{ template "test-doshas-button" . }}
+                {{ end }}
               </div>
-            </div>
+            </form>
+          </div>
 
-            <div class="form-notification">
-              {{ $data := newScratch }}
-              {{ $data.Set "prefix" "notification" }}
-              {{ partial "components/notification.tmpl" (dict "Data" $data "Page" .) }}
-            </div>
-          </form>
+          <div class="form-notification">
+            {{ $data := newScratch }}
+            {{ $data.Set "prefix" "notification" }}
+            {{ partial "components/notification.tmpl" (dict "Data" $data "Page" .) }}
+          </div>
         </div>
       </main>
 

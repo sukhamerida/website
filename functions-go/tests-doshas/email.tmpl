@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="viewport" content="width=device-width"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <p style="text-align: center;">
+    <img src="https://www.sukhamerida.com/uploads/site-image.png"
+         style="width: 15em; max-width: 80%;"/>
+  </p>
+
+  <p>Hola <strong>{{ printf "%s %s" .User.Name .User.Lastname }}</strong>!
+
+  <p>
+    El resultado del test de <strong>Constitución Ayurvédica</strong> indica:
+  </p>
+
+  <p><strong>Constitución física:</strong></p>
+
+  <ul>
+    <li><strong>Vata:</strong> {{ printf "%.2f" .Results.Body.Vata }}%</li>
+    <li><strong>Pitta:</strong> {{ printf "%.2f" .Results.Body.Pitta }}%</li>
+    <li><strong>Kapha:</strong> {{ printf "%.2f" .Results.Body.Kapha }}%</li>
+  </ul>
+
+  <p><strong>Constitución mental:</strong></p>
+
+  <ul>
+    <li><strong>Sattva:</strong> {{ printf "%.2f" .Results.Mind.Sattva }}%</li>
+    <li><strong>Rajas:</strong> {{ printf "%.2f" .Results.Mind.Rajas }}%</li>
+    <li><strong>Tamas:</strong> {{ printf "%.2f" .Results.Mind.Tamas }}%</li>
+  </ul>
+
+  <p>Muchas gracias por participar.</p>
+
+  <p><small>
+    No respondas a este correo ya que es generado automáticamente, si
+    necesitas ayuda o información escríbenos a <a href="mailto:info@sukhamerida.com">info@sukhamerida.com</a>.
+  </small></p>
+</body>
+</html>

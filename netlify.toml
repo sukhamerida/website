@@ -1,9 +1,12 @@
 [build]
-  command = "hugo"
+  command = "make netlify"
+  functions = "functions"
   publish = "public"
 
 [build.environment]
   HUGO_VERSION = "0.82.0"
+  GO_IMPORT_PATH="github.com/sukhamerida/website"
+  GO_VERSION="1.16"
 
 [context.deploy-preview]
   command = "hugo -DEF --baseURL=/"

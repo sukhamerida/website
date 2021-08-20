@@ -6,7 +6,13 @@ all: build
 
 .PHONY: build
 build:
-	hugo
+	hugo --gc
+
+.PHONY: build-functions
+build-functions:
+	mkdir -p functions
+	gofmt -d -e -s functions-go
+	go build -o functions/ ./functions-go/...
 
 .PHONY: bump-version-hugo
 bump-version-hugo:
@@ -26,7 +32,10 @@ bump-version-hugo:
 
 .PHONY: clean
 clean:
-	rm -rf public
+	rm -rf functions public
+
+.PHONY: netlify
+netlify: build-functions build
 
 .PHONY: run
 run:
@@ -45,7 +54,7 @@ docker-build:
 		-u $$(id -u $$USER) \
 		-v "$${TMPDIR:-/tmp}":/tmp/ \
 		-v "$$PWD":/site/ \
-		ntrrg/hugo:$(DOCKER_IMAGE_TAG)
+		ntrrg/hugo:$(DOCKER_IMAGE_TAG) --gc
 
 .PHONY: docker-run
 docker-run:

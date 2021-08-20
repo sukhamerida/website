@@ -2691,8 +2691,9 @@ button.dropdown-item {
 .noscript-notification {
   margin-bottom: 1em; }
 
-.is-grouped .button:not(:first-child) {
-  margin-left: 1em; }
+.field.is-grouped {
+  flex-wrap: wrap;
+  gap: 1em; }
 
 .select.is-expanded,
 .select.is-expanded select {
@@ -2705,15 +2706,12 @@ button.dropdown-item {
 .dropdown.is-expanded .dropdown-trigger,
 .dropdown.is-expanded .dropdown-trigger .button,
 .dropdown.is-expanded .dropdown-menu,
-.dropdown.is-expanded .dropdown-menu .dropdown-item label {
+.dropdown.is-expanded .dropdown-menu .dropdown-item {
   width: 100%; }
 
 .dropdown.is-expanded .dropdown-trigger .button {
   overflow: hidden;
   justify-content: space-between; }
-
-.dropdown.is-expanded .dropdown-menu .dropdown-item label {
-  display: block; }
 
 .form-notification {
   margin-top: 1em; }
