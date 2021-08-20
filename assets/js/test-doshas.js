@@ -4,10 +4,11 @@ import {state as jobsState} from './components/jobs'
 import {state as notificationState} from './components/notification'
 
 const _state = {
+  tab: 'intro',
+
   fields: {
     body: [],
     mind: [],
-    doshas: [],
 
     firstname: '',
     lastname: '',
@@ -15,8 +16,6 @@ const _state = {
     phone: '',
     email: '',
   },
-
-  tab: 'intro',
 
   results: {
     body: {vata: 0, pitta: 0, kapha: 0},
@@ -42,7 +41,6 @@ window.doshasState = function () {
 
     getResults() {
       this.newJob()
-      this.notification.close()
       this.results = cloneObject(_state.results)
 
       for (const key of ['body', 'mind']) {

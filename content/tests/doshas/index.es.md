@@ -2,7 +2,7 @@
 title: Test de Doshas
 image: /uploads/doshas.png
 description: Este test te permite conocer tu constipación Ayurvédica.
-fields:
+sections:
   body:
     - label: Contextura
       options:
@@ -124,7 +124,7 @@ fields:
           text: Suaves, rosadas
         - value: kapha
           text: Fuertes, gruesas
-    - label: Calidad del Sueño
+    - label: Sueño
       options:
         - value: vata
           text: Ligero, con interrupciones
@@ -180,6 +180,14 @@ fields:
           text: Profusa, olor intenso
         - value: kapha
           text: Moderada
+    - label: Memoria
+      options:
+        - value: vata
+          text: Rápida, tendencia a olvidar
+        - value: pitta
+          text: Aguda, clara
+        - value: kapha
+          text: Lenta, pero constante
     - label: Comprensión
       options:
         - value: vata
@@ -207,11 +215,11 @@ fields:
     - label: Enfermedades Frecuentes
       options:
         - value: vata
-          text: Nerviosas, mentales, dolor neurálgico y articular
+          text: Alteraciones nerviosas, mentales, dolor neurálgico y articular
         - value: pitta
-          text: Infecciosas, inflamatorias, trastornos sanguíneos
+          text: Enfermedades infecciosas, inflamatorias, trastornos sanguíneos
         - value: kapha
-          text: Sistémicas, respiratorias, edema, mucosidad, inflamación articular
+          text: Enfermedades sistémicas, respiratorias, edema, mucosidad, inflamación articular
     - label: Sexualidad
       options:
         - value: vata
@@ -277,14 +285,6 @@ fields:
         - value: kapha
           text: Sostenida, lenta en cambiar
   mind:
-    - label: Dieta
-      options:
-        - value: sattva
-          text: Vegetariana
-        - value: rajas
-          text: Algo de carne
-        - value: tamas
-          text: Mucha carne
     - label: Drogas, Alcohol, Estimulantes
       options:
         - value: sattva

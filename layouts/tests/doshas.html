@@ -1,6 +1,6 @@
 {{ define "styles-default" }}
-  {{ .Scratch.Set "cssSrc" (resources.Get "sass/tests.scss") }}
-  {{ .Scratch.Set "cssOutput" "css/tests.css" }}
+  {{ .Scratch.Set "cssSrc" (resources.Get "sass/test-doshas.scss") }}
+  {{ .Scratch.Set "cssOutput" "css/test-doshas.css" }}
   {{ $sheet := partial "build-css.tmpl" . }}
   <link rel="stylesheet" type="text/css" href="{{ $sheet.Permalink }}"/>
 {{ end }}
@@ -58,16 +58,6 @@
                   </a>
                 </li>
 
-                <li :class="{ 'is-active': tab === 'doshas' }">
-                  <a id="tab-doshas" href="#"
-                     role="tab" aria-controls="tabpanel-doshas"
-                     :aria-selected="tab === 'doshas' ? 'true' : 'false'"
-                     :tabindex="tab === 'doshas' ? 0 : -1"
-                     @click.prevent="changeTab('doshas')">
-                    Doshas
-                  </a>
-                </li>
-
                 <li :class="{ 'is-active': tab === 'results' }">
                   <a id="tab-results" href="#"
                      role="tab" aria-controls="tabpanel-results"
@@ -115,7 +105,7 @@
             <div id="tabpanel-body" tabindex="0"
                  role="tabpanel" aria-labelledby="tab-body"
                  :hidden="tab !== 'body'" x-cloak>
-              {{ range $i, $_ := .Params.fields.body }}
+              {{ range $i, $_ := .Params.sections.body }}
                 <div class="field">
                   <label class="label"
                          x-show.transition="fields.body[{{ $i }}]">
@@ -200,7 +190,7 @@
             <div id="tabpanel-mind" tabindex="0"
                  role="tabpanel" aria-labelledby="tab-mind"
                  :hidden="tab !== 'mind'" x-cloak>
-              {{ range $i, $_ := .Params.fields.mind }}
+              {{ range $i, $_ := .Params.sections.mind }}
                 <div class="field">
                   <label class="label"
                          x-show.transition="fields.mind[{{ $i }}]">
@@ -210,14 +200,14 @@
                   <div class="control is-expanded">
                     <div class="dropdown is-expanded"
                          :class="{'is-danger': !fields.mind[{{ $i }}]}"
-                         x-ref="dropdownBody{{ $i }}"
-                         @click.away="$refs['dropdownBody{{ $i }}'].classList.remove('is-active')">
+                         x-ref="dropdownMind{{ $i }}"
+                         @click.away="$refs['dropdownMind{{ $i }}'].classList.remove('is-active')">
                       <div class="dropdown-trigger">
                         <button class="button has-text-left-aligned"
                                 aria-haspopup="true"
                                 aria-controls="dropdown-mind-{{ $i }}"
-                                x-text="$refs['dropdownBody{{ $i }}' + fields.mind[{{ $i }}]] ? $refs['dropdownBody{{ $i }}' + fields.mind[{{ $i }}]].innerText : '{{ .label }}'"
-                                @click="$refs['dropdownBody{{ $i }}'].classList.toggle('is-active')">
+                                x-text="$refs['dropdownMind{{ $i }}' + fields.mind[{{ $i }}]] ? $refs['dropdownMind{{ $i }}' + fields.mind[{{ $i }}]].innerText : '{{ .label }}'"
+                                @click="$refs['dropdownMind{{ $i }}'].classList.toggle('is-active')">
                         </button>
                       </div>
 
@@ -230,8 +220,8 @@
                             {{ end }}
 
                             <label class="dropdown-item"
-                                   x-ref="dropdownBody{{ $i }}{{ .value }}"
-                                   @click="$refs['dropdownBody{{ $i }}'].classList.remove('is-active')">
+                                   x-ref="dropdownMind{{ $i }}{{ .value }}"
+                                   @click="$refs['dropdownMind{{ $i }}'].classList.remove('is-active')">
                               <input type="radio" name="mind[]"
                                      value="{{ .value }}" hidden
                                      x-model="fields.mind[{{ $i }}]"/>
@@ -275,22 +265,6 @@
                   Regresar
                 </button>
 
-                <button type="button" class="button"
-                        @click="changeTab('doshas')">
-                  Siguiente
-                </button>
-              </div>
-            </div>
-
-            <div id="tabpanel-doshas" tabindex="0"
-                 role="tabpanel" aria-labelledby="tab-doshas"
-                 :hidden="tab !== 'doshas'" x-cloak>
-              <div class="field is-grouped is-grouped-centered">
-                <button type="button" class="button"
-                        @click="changeTab('mind')">
-                  Regresar
-                </button>
-
                 <button type="button" class="button is-primary"
                         @click="changeTab('results'); getResults()">
                   Ver resultados
@@ -304,7 +278,7 @@
               <div class="content">
                 <p>
                   Los resultados del test de <strong>Constitución
-                  Ayurvédica</strong> indican un Prakrutri:
+                  Ayurvédica</strong> indican un Prakriti:
                 </p>
 
                 <div class="test-result">
@@ -352,7 +326,7 @@
 
               <div class="field is-grouped is-grouped-centered">
                 <button type="button" class="button"
-                        @click="changeTab('doshas')">
+                        @click="changeTab('mind')">
                   Regresar
                 </button>
 

@@ -20,8 +20,8 @@ collections:
           - {name: image, label: Imágen, widget: image}
           - {name: description, label: Descripción, widget: text}
           - {name: body, label: Introdución, widget: markdown}
-          - name: fields
-            label: Campos
+          - name: sections
+            label: Secciones
             widget: object
             fields:
               - name: body
