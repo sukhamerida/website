@@ -1,7 +1,7 @@
 ---
 title: Test de Doshas
 image: /uploads/doshas.png
-description: Este test te permite conocer tu constipación Ayurvédica.
+description: Este test te permite conocer tu constitución Ayurvédica.
 sections:
   - name: intro
     label: Introducción
