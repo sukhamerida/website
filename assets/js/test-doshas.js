@@ -22,6 +22,8 @@ const _state = {
   },
 }
 
+var firstLoad = true
+
 function cloneObject(obj) {
   return JSON.parse(JSON.stringify(obj))
 }
@@ -35,7 +37,11 @@ window.doshasState = function () {
     changeTab(tab) {
       this.tab = tab
       this.notification.close()
-      this.$refs.tabs.querySelector(`#tab-${tab}`).scrollIntoView()
+
+      if (!firstLoad)
+        this.$refs.tabs.querySelector(`#tab-${tab}`).scrollIntoView()
+      else
+        firstLoad = false
 
       if (tab === 'data')
         this.getResults()
