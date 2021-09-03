@@ -554,9 +554,13 @@ Tienes dos maneras de contestarlo:
 
 &nbsp;&nbsp;&nbsp;**PRAKRUTI** (naturaleza básica con la que has nacido).
 
+<br/>
+
 2\. Según tu situación y experiencia actual.
 
 &nbsp;&nbsp;&nbsp;**VIKRUTI** (estado actual de equilibrio o desequilibrio).
+
+<br/>
 
 Tu dosha principal es la que contiene un mayor porcentaje.
 
