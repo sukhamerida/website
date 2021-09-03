@@ -207,67 +207,6 @@
             </div>
           </div>
 
-          <div id="tabpanel-results" tabindex="0"
-               role="tabpanel" aria-labelledby="tab-results"
-               :hidden="tab !== 'results'" x-cloak>
-            {{ $resultsSec := index (where $sections "name" "results") 0 }}
-
-            <div class="content">
-              <p>
-                Los resultados del test de <strong>Constitución
-                Ayurvédica</strong> indican un Prakriti:
-              </p>
-
-              <div class="test-result">
-                <div class="test-result-images"></div>
-
-                <p><strong>Constitución física:</strong></p>
-
-                <ul>
-                  <li>
-                    <strong>Vata:</strong>
-                    <span x-text="results.body.vata.toFixed(2)"></span>%
-                  </li>
-
-                  <li>
-                    <strong>Pitta:</strong>
-                    <span x-text="results.body.pitta.toFixed(2)"></span>%
-                  </li>
-
-                  <li>
-                    <strong>Kapha:</strong>
-                    <span x-text="results.body.kapha.toFixed(2)"></span>%
-                  </li>
-                </ul>
-
-                <p><strong>Constitución mental:</strong></p>
-
-                <ul>
-                  <li>
-                    <strong>Sattva:</strong>
-                    <span x-text="results.mind.sattva.toFixed(2)"></span>%
-                  </li>
-
-                  <li>
-                    <strong>Rajas:</strong>
-                    <span x-text="results.mind.rajas.toFixed(2)"></span>%
-                  </li>
-
-                  <li>
-                    <strong>Tamas:</strong>
-                    <span x-text="results.mind.tamas.toFixed(2)"></span>%
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div class="field is-grouped is-grouped-centered">
-              {{ range $resultsSec.buttons }}
-                {{ template "test-doshas-button" . }}
-              {{ end }}
-            </div>
-          </div>
-
           <div id="tabpanel-data" tabindex="0"
                role="tabpanel" aria-labelledby="tab-data"
                :hidden="tab !== 'data'" x-cloak>

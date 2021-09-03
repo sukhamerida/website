@@ -4,7 +4,7 @@ image: /uploads/doshas.png
 description: Este test te permite conocer tu constitución Ayurvédica.
 sections:
   - name: intro
-    label: Introducción
+    label: Indicaciones
     buttons:
       - label: Reiniciar test
         action: reset()
@@ -532,27 +532,33 @@ sections:
         action: changeTab('body')
       - label: Ver resultados
         classes: is-primary
-        action: changeTab('results')
-  - name: results
-    label: Resultados
-    buttons:
-      - label: Regresar
-        action: changeTab('mind')
-      - label: Reiniciar test
-        action: reset()
-      - label: Guardar
-        classes: is-primary
         action: changeTab('data')
   - name: data
     label: Datos personales
     buttons:
       - label: Regresar
-        action: changeTab('results')
+        action: changeTab('mind')
       - label: Enviar
         classes: is-primary
         action: submit()
+      - label: Reiniciar test
+        action: reset()
 layout: doshas
 ---
 
-Hola, bienvenidos al test de Doshas de Sukha Mérida.
+En este test conocerás tu constitución física y mental.
+
+Tienes dos maneras de responder a este test:
+
+1. Según las características generales que has tenido a lo largo de tu vida.
+
+   Obtendrás tu **PRAKRUTI** (naturaleza básica con la que has nacido).
+
+2. Según tu situación y experiencia actual.
+
+   Obtendrás tu **VIKRUTI** (estado actual de equilibrio o desequilibrio).
+
+Tu dosha principal es la que contiene un porcentaje mayor.
+
+Si los porcentajes son iguales o similares, eres *Tridosha*.
 

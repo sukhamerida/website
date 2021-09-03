@@ -3,7 +3,7 @@
 import {state as jobsState} from './components/jobs'
 import {state as notificationState} from './components/notification'
 
-const version = 'v1'
+const version = 'v2'
 
 const _state = {
   tab: 'intro',
@@ -37,7 +37,7 @@ window.doshasState = function () {
       this.notification.close()
       this.$refs.tabs.querySelector(`#tab-${tab}`).scrollIntoView()
 
-      if (tab === 'results')
+      if (tab === 'data')
         this.getResults()
     },
 
