@@ -538,11 +538,11 @@ sections:
     buttons:
       - label: Regresar
         action: changeTab('mind')
+      - label: Reiniciar test
+        action: reset()
       - label: Enviar
         classes: is-primary
         action: submit()
-      - label: Reiniciar test
-        action: reset()
 layout: doshas
 ---
 
