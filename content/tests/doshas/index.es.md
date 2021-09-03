@@ -534,7 +534,7 @@ sections:
         classes: is-primary
         action: changeTab('data')
   - name: data
-    label: Datos personales
+    label: Resultados
     buttons:
       - label: Regresar
         action: changeTab('mind')
