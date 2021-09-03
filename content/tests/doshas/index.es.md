@@ -548,17 +548,17 @@ layout: doshas
 
 En este test conocerás tu constitución física y mental.
 
-Tienes dos maneras de responder a este test:
+Tienes dos maneras de contestarlo:
 
-1. Según las características generales que has tenido a lo largo de tu vida.
+1\. Según las características generales que has tenido a lo largo de tu vida.
 
-   Obtendrás tu **PRAKRUTI** (naturaleza básica con la que has nacido).
+&nbsp;&nbsp;&nbsp;**PRAKRUTI** (naturaleza básica con la que has nacido).
 
-2. Según tu situación y experiencia actual.
+2\. Según tu situación y experiencia actual.
 
-   Obtendrás tu **VIKRUTI** (estado actual de equilibrio o desequilibrio).
+&nbsp;&nbsp;&nbsp;**VIKRUTI** (estado actual de equilibrio o desequilibrio).
 
-Tu dosha principal es la que contiene un porcentaje mayor.
+Tu dosha principal es la que contiene un mayor porcentaje.
 
 Si los porcentajes son iguales o similares, eres *Tridosha*.
 
