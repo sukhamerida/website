@@ -4,7 +4,7 @@ image: /uploads/doshas.png
 description: Este test te permite conocer tu constitución Ayurvédica.
 sections:
   - name: intro
-    label: Indicaciones
+    label: Bienvenido
     buttons:
       - label: Reiniciar test
         action: reset()
