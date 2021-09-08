@@ -24,6 +24,7 @@ var (
 	SMTPPort     = os.Getenv("SMTP_PORT")
 	SMTPEmail    = os.Getenv("SMTP_EMAIL")
 	SMTPPassword = os.Getenv("SMTP_PASSWORD")
+	SMTPAuth     = smtp.PlainAuth("", SMTPEmail, SMTPPassword, SMTPHost)
 
 	//go:embed email.tmpl
 	emailTemplateData string
@@ -120,20 +121,19 @@ func parseRequestBody(data string) (User, Body, Mind, error) {
 }
 
 func sendEmail(email, message string) error {
-	host := SMTPHost + ":" + SMTPPort
+	from := "noreply@sukhamerida.com"
 
-	auth := smtp.PlainAuth("", SMTPEmail, SMTPPassword, SMTPHost)
+	return smtp.SendMail(
+		SMTPHost+":"+SMTPPort, SMTPAuth, from, []string{email},
 
-	msg := []byte(
-		"To: " + email + "\r\n" +
-			"Subject: Resultado del test de Doshas (Sukha Mérida)\r\n" +
-			"MIME-version: 1.0;\r\n" +
-			"Content-Type: text/html; charset=\"UTF-8\";\r\n" +
-			"\r\n" +
-			message,
+		[]byte(`From: Sukha Mérida <`+from+`>
+To: `+email+`
+Subject: Resultado del test de Doshas (Sukha Mérida)
+MIME-version: 1.0;
+Content-Type: text/html; charset="UTF-8";
+
+`+message),
 	)
-
-	return smtp.SendMail(host, auth, SMTPEmail, []string{email}, msg)
 }
 
 type Body struct {
