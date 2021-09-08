@@ -23,7 +23,7 @@
         <h1 class="title">{{ .Title }}</h1>
       </header>
 
-      <main class="page-body">
+      <div class="page-body">
         <noscript>
           <div class="notification noscript-notification is-warning">
             <p class="notification-body">
@@ -55,9 +55,9 @@
                :hidden="tab !== 'intro'" x-cloak>
             {{ $introSec := index (where $sections "name" "intro") 0 }}
 
-            <div class="content">
+            <main class="content">
               {{ .Content }}
-            </div>
+            </main>
 
             <div class="field is-grouped is-grouped-centered">
               {{ range $introSec.buttons }}
@@ -295,7 +295,7 @@
             {{ partial "components/notification.tmpl" (dict "Data" $data "Page" .) }}
           </div>
         </div>
-      </main>
+      </div>
 
       <footer class="page-footer has-text-centered">
         <div>
