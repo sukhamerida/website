@@ -148,7 +148,7 @@ func (b *Body) From(body Body) error {
 	}
 
 	sum := body.Vata + body.Pitta + body.Kapha
-	if sum < 99.9 || sum > 100 {
+	if sum < 99 || sum > 100 {
 		return errors.New("the sum of body stats must be 100")
 	}
 
@@ -171,7 +171,7 @@ func (m *Mind) From(mind Mind) error {
 	}
 
 	sum := mind.Sattva + mind.Rajas + mind.Tamas
-	if sum < 99.9 || sum > 100 {
+	if sum < 99 || sum > 100 {
 		return errors.New("the sum of mind stats must be 100")
 	}
 
